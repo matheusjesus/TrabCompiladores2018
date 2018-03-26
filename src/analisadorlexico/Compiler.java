@@ -81,7 +81,7 @@ public class Compiler {
     
     //string_decl -> STRING id := str ; | empty
     public void string_decl(){
-        if(lexer.token != Symbol.STRING){
+        if(lexer.token == Symbol.STRING){
             lexer.nextToken();
 
             id();
@@ -90,21 +90,26 @@ public class Compiler {
                 error.signal("Um sinal de atribuicao era esperado na linha " + lexer.getLineNumber());
             }
             lexer.nextToken();
+            
+            System.out.println("antes de chamar str");
 
             str();
 
+            System.out.println("dps de chamar str");            
+            
             if(lexer.token != Symbol.SEMICOLON){
                 error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber());
             }
+            lexer.nextToken();
+            lexer.nextToken(); // nao tenho mta ctz do pq mas da certo!
+            System.out.println("dps de verfiicar ; o lexer eh: " + lexer.token);
         }
     }
     
     //str -> STRINGLITERAL
     public void str(){
-        if(lexer.token != Symbol.STRING){
-            error.signal("A string nao se encontra nos padroes! Linha: " + lexer.getLineNumber());
-        }
-        lexer.nextToken();
+        //verificar se esta entre ""? precisaria de um Symbol STRINLITERAL!
+        //lexer.nextToken();
     }
     
     //string_decl_tail -> string_decl {string_decl_tail}
@@ -141,7 +146,7 @@ public class Compiler {
     
     //var_type -> FLOAT | INT
     public void var_type(){
-        if(lexer.token != Symbol.FLOAT || lexer.token != Symbol.INT){
+        if(lexer.token != Symbol.FLOAT && lexer.token != Symbol.INT){
             error.signal("Uma declaracao de INT ou FLOAT era esperada na linha " + lexer.getLineNumber());
         }
         lexer.nextToken();
@@ -332,6 +337,9 @@ public class Compiler {
         }else if(lexer.token == Symbol.FOR){
             for_stmt();
         }
+        else{
+            call_expr();
+        }
     }
     
     
@@ -465,17 +473,26 @@ public class Compiler {
     
     //postfix_expr -> primary | call_expr
     public void postfix_expr(){
-        if(lexer.token == Symbol.LPAR){
-            primary();
+        if(lexer.token == Symbol.IDENT){
+            lexer.nextToken();
+            if(lexer.token == Symbol.LPAR){
+                call_expr(); //tratada para nao conferir o ID;
+            }
+            else{
+                primary();
+            }
         }
         else{
-            call_expr();
+            primary();
         }
+        
+        
+        
     }
     
     //call_expr -> id ( {expr_list} )
     public void call_expr(){
-        id();
+        //id(); TIREI POR CAUSA DO POSTFIX_EXPR;
         
         if(lexer.token != Symbol.LPAR){
             error.signal("As expressoes devem estar entre parenteses! Linha " + lexer.getLineNumber());
@@ -521,15 +538,16 @@ public class Compiler {
     public void primary(){
         if(lexer.token == Symbol.LPAR){
             expr();
+/*  ISSO FOI FEITO POR UMA DIFICULDADE COM DECIDIR QUAL CHAMAR NO POSTFIX_EXPR
         }
         else if(lexer.token == Symbol.IDENT){
-            id();
+            id();*/
         }
         else if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT){
             lexer.nextToken();
         }
         else{
-            error.signal("Uma expressao, identificador, int ou float era esperado na linha " + lexer.getLineNumber());
+            //eh id
         }
     }
     
@@ -571,14 +589,17 @@ public class Compiler {
         }
         lexer.nextToken();
         
-        if(lexer.token != Symbol.ELSE){
+        if(lexer.token != Symbol.THEN){
             error.signal("Uma declaracao ELSE era esperada na linha " + lexer.getLineNumber());
         }
         lexer.nextToken();
         
         stmt_list();
         
-        else_part();
+        if(lexer.token == Symbol.ELSE){
+            else_part();
+        }       
+        
         
         if(lexer.token != Symbol.ENDIF){
             error.signal("Uma declaracao ENDIF era esperada na linha " + lexer.getLineNumber());

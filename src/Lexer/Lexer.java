@@ -24,17 +24,176 @@ public class Lexer {
     // this code will be executed only once for each program execution
     static {
         keywordsTable = new Hashtable<String, Symbol>();
-        keywordsTable.put( "begin", Symbol.BEGIN );
-
+        keywordsTable.put( "BEGIN", Symbol.BEGIN );
+        keywordsTable.put( "END", Symbol.END );
+        keywordsTable.put( "PROGRAM", Symbol.PROGRAM);
+        keywordsTable.put( "FUNCTION", Symbol.FUNCTION);
+        keywordsTable.put( "EOF", Symbol.EOF );
+        keywordsTable.put( "READ", Symbol.READ );
+        keywordsTable.put( "WRITE", Symbol.WRITE );
+        keywordsTable.put( "IF", Symbol.IF );
+        keywordsTable.put( "THEN", Symbol.THEN );
+        keywordsTable.put( "ELSE", Symbol.ELSE );
+        keywordsTable.put( "ENDIF", Symbol.ENDIF );
+        keywordsTable.put( "RETURN", Symbol.RETURN );
+        keywordsTable.put( "FOR", Symbol.FOR );
+        keywordsTable.put( "ENDFOR", Symbol.ENDFOR );
+        keywordsTable.put( "FLOAT", Symbol.FLOAT );
+        keywordsTable.put( "INT", Symbol.INT );
+        keywordsTable.put( "VOID", Symbol.VOID );
+        keywordsTable.put( "STRING", Symbol.STRING );
     }
     
     
-    public void nextToken() {
+    public void nextToken() {       
+        //pula os caracteres de espacamento e pula linha
+        while(Character.isWhitespace(input[tokenPos]) == true){
+            if (input[tokenPos] == '\n'){
+                lineNumber++;
+            }
+            tokenPos++;
+        }
+        
+        //verifica se chegou ao final do arquivo
+        if (input[tokenPos] == '\0'){
+            token = Symbol.EOF;
+            return;
+        }
+        
+        //verifica se eh comentario
+        if (input[tokenPos] == '-' && input[tokenPos+1] == '-'){
+            tokenPos = tokenPos +2;
+            while(input[tokenPos] != '\n' && input[tokenPos] != '\0'){
+                tokenPos++;
+            }
+            this.nextToken();
+            return;
+        }
+        
+        //pula verificacao de stringliteral
+        if (input[tokenPos] == '"'){
+            tokenPos++;
+            while(input[tokenPos] != '"' && input[tokenPos] != '\0'){
+                tokenPos++;
+            }
+            System.out.println("Entrou pular stringliteral");
 
+            if(input[tokenPos+1] == ';'){
+                token = Symbol.SEMICOLON;
+                tokenPos++;
+            }
+            
+            return;
+        }
+        
 
+        //Reconhecer o Token:
+        StringBuffer aux = new StringBuffer();
+        int isFloat = 0;
+        while (Character.isDigit(input[tokenPos]) || input[tokenPos] == '.'){
+            
+            //verifica se tem . se sim, concluimos que o num eh um float
+            if(input[tokenPos] == '.'){
+                isFloat = 1;
+            }
+            
+            //concatenar esses digitos na string aux
+            aux = aux.append(input[tokenPos]);
+            tokenPos++;
+        }
+    
+        float num;
+        if (aux.length() > 0){
+            if(isFloat == 1){
+                //converte string para inteiro
+                num = Float.parseFloat(aux.toString());
+                if (num > Float.MAX_VALUE){
+                    error.signal("O valor e maior que o valor maximo de um float.");
+                }
+                token = Symbol.NUMBER;
+                nextToken();
+                
+            }
+            else{
+                //converte string para inteiro
+                numberValue = Integer.parseInt(aux.toString());
+                if (numberValue > MaxValueInteger){
+                    error.signal("O valor e maior que o valor maximo de um int.");
+                }
+                token = Symbol.NUMBER;
+                nextToken();
+            }            
+        }
+        else{
+            while (Character.isLetter(input[tokenPos]) || Character.isDigit(input[tokenPos])){
+                aux = aux.append(input[tokenPos]); //vai concatenando todas as letras, ainda eh string
+                tokenPos++;
+            }
 
-		if (DEBUGLEXER)
-			System.out.println(token.toString());
+            System.out.println("tamanho: " + aux.length());
+            System.out.println("anteiror: " + input[tokenPos -1]);
+            System.out.println("atual: " + input[tokenPos]);
+            System.out.println("proximo: " + input[tokenPos +1]);
+            
+            if (aux.length() > 0){
+                Symbol temp;
+                temp = keywordsTable.get(aux.toString()); //verifica na key word hash
+                if (temp == null){ //nao eh palavra
+                    token = Symbol.IDENT;
+                    stringValue = aux.toString();
+                }
+                else {
+                    token = temp;
+                }
+            }
+            else if(input[tokenPos] == ':' && input[tokenPos+1] == '='){
+                token = Symbol.ASSIGN;
+                tokenPos++;
+                tokenPos++;
+            }
+            else {
+                switch (input[tokenPos]){
+                    case '+':
+                        token = Symbol.PLUS;
+                        break;
+                    case '-':
+                        token = Symbol.MINUS;
+                        break;
+                    case '/':
+                        token = Symbol.DIV;
+                        break;
+                    case '*':
+                        token = Symbol.MULT;
+                        break;
+                    case '=':
+                        token = Symbol.EQUAL;
+                        break;
+                    case ',':
+                        token = Symbol.COMMA;
+                        break;
+                    case ';':
+                        token = Symbol.SEMICOLON;
+                        break;
+                    case '<':
+                        token = Symbol.LT;
+                        break;
+                    case '>':
+                        token = Symbol.GT;
+                        break;
+                    case '(':
+                        token = Symbol.LPAR;
+                        break;
+                    case ')':
+                        token = Symbol.RPAR;
+                        break;
+                    default:
+                        error.signal("erro lexico");
+                }
+                tokenPos++;
+            }
+        }        
+    if (DEBUGLEXER)
+			System.out.println(token.toString() + "\n\n");
         lastTokenPos = tokenPos - 1;
     }
     
