@@ -9,8 +9,8 @@ public class Compiler {
 	public static final boolean GC = false; 
 
     public void compile( char []p_input ) {
-        lexer = new Lexer(p_input, error);
         error = new CompilerError(null);
+        lexer = new Lexer(p_input, error);
         error.setLexer(lexer);
         lexer.nextToken();
         program();

@@ -153,9 +153,19 @@ public class Lexer {
             }            
         }
         else{
-            while (Character.isLetter(input[tokenPos]) || Character.isDigit(input[tokenPos])){
-                aux = aux.append(input[tokenPos]); //vai concatenando todas as letras, ainda eh string
-                tokenPos++;
+            if(Character.isLetter(input[tokenPos])){
+                while (Character.isLetter(input[tokenPos]) || Character.isDigit(input[tokenPos])){
+                    aux = aux.append(input[tokenPos]); //vai concatenando todas as letras, ainda eh string
+                    tokenPos++;
+                }
+                
+/*                if(!Character.isWhitespace(input[tokenPos]) && input[tokenPos] != ';' && input[tokenPos] != ',' && input[tokenPos] != '(' && input[tokenPos] != ')'){
+                    error.signal("O identificador esta fora dos padroes na linha " + lineNumber + "\nUm identificador deve ter no maximo 31 caracteres, comecar com uma letra e conter apenas letras e numeros!");
+                }
+                
+                if(aux.length() > 31){
+                    error.signal("Um identificador deve ter no maximo 31 caracteres! Linha " + lineNumber);
+                }*/
             }
             
             if (aux.length() > 0){
