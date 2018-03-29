@@ -1,0 +1,15 @@
+PROGRAM teste
+BEGIN
+
+	FUNCTION VOID main () BEGIN
+		INT num;
+		
+		num := 0;
+		
+		fib( num );
+	END
+	
+	FUNCTION VOID fib ( INT num) BEGIN
+		num := num + 1;
+	END
+END

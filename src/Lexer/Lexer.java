@@ -44,8 +44,30 @@ public class Lexer {
         keywordsTable.put( "STRING", Symbol.STRING );
     }
     
+    public Symbol checkNextToken(){
+        int backupTokenPos = tokenPos;
+        int backupLineNumber = lineNumber;
+        Symbol backupToken = token;
+        int backupIntNumber = IntNumber;
+        float backupFloatNumber = FloatNumber;
+        String backupStringValue = stringValue;
+
+        
+        System.out.print("Predicao: ");
+        Symbol retorno = nextToken();
+
+        tokenPos = backupTokenPos;
+        lineNumber = backupLineNumber;
+        token = backupToken;
+        IntNumber = backupIntNumber;
+        FloatNumber = backupFloatNumber;
+        stringValue = backupStringValue;
+
+        return retorno;
+    }
     
-    public void nextToken() {       
+    
+    public Symbol nextToken() {       
         //pula os caracteres de espacamento e pula linha
         while(Character.isWhitespace(input[tokenPos]) == true){
             if (input[tokenPos] == '\n'){
@@ -57,7 +79,7 @@ public class Lexer {
         //verifica se chegou ao final do arquivo
         if (input[tokenPos] == '\0'){
             token = Symbol.EOF;
-            return;
+            return token;
         }
         
         //verifica se eh comentario
@@ -67,7 +89,7 @@ public class Lexer {
                 tokenPos++;
             }
             this.nextToken();
-            return;
+            return token;
         }
         
         //pula verificacao de stringliteral
@@ -76,14 +98,14 @@ public class Lexer {
             while(input[tokenPos] != '"' && input[tokenPos] != '\0'){
                 tokenPos++;
             }
-            System.out.println("Entrou pular stringliteral");
-
-            if(input[tokenPos+1] == ';'){
-                token = Symbol.SEMICOLON;
-                tokenPos++;
-            }
+            tokenPos++;
             
-            return;
+            token = Symbol.STRINGLITERAL;
+            
+            if(DEBUGLEXER)
+                System.out.println(token.toString() + "\n\n");
+            
+            return token;
         }
         
 
@@ -102,25 +124,31 @@ public class Lexer {
             tokenPos++;
         }
     
-        float num;
         if (aux.length() > 0){
             if(isFloat == 1){
                 //converte string para inteiro
-                num = Float.parseFloat(aux.toString());
-                if (num > Float.MAX_VALUE){
+                FloatNumber = Float.parseFloat(aux.toString());
+                if (FloatNumber > Float.MAX_VALUE){
                     error.signal("O valor e maior que o valor maximo de um float.");
                 }
-                token = Symbol.NUMBER;
-                nextToken();
+                token = Symbol.FLOATLITERAL;
+
+                if(DEBUGLEXER)
+                    System.out.println(token.toString() + "\n\n");
                 
+                nextToken();
             }
             else{
                 //converte string para inteiro
-                numberValue = Integer.parseInt(aux.toString());
-                if (numberValue > MaxValueInteger){
+                IntNumber = Integer.parseInt(aux.toString());
+                if (IntNumber > MaxValueInteger){
                     error.signal("O valor e maior que o valor maximo de um int.");
                 }
-                token = Symbol.NUMBER;
+                token = Symbol.INTLITERAL;
+
+                if(DEBUGLEXER)
+                    System.out.println(token.toString() + "\n\n");
+                
                 nextToken();
             }            
         }
@@ -129,11 +157,6 @@ public class Lexer {
                 aux = aux.append(input[tokenPos]); //vai concatenando todas as letras, ainda eh string
                 tokenPos++;
             }
-
-            System.out.println("tamanho: " + aux.length());
-            System.out.println("anteiror: " + input[tokenPos -1]);
-            System.out.println("atual: " + input[tokenPos]);
-            System.out.println("proximo: " + input[tokenPos +1]);
             
             if (aux.length() > 0){
                 Symbol temp;
@@ -192,9 +215,21 @@ public class Lexer {
                 tokenPos++;
             }
         }        
-    if (DEBUGLEXER)
-			System.out.println(token.toString() + "\n\n");
+        if (DEBUGLEXER)
+            System.out.println(token.toString() + "\n\n");
+        
+        
+ //       System.out.println("tamanho: " + aux.length());
+ //       System.out.println("anteiror: " + input[tokenPos -1]);
+ //       System.out.println("atual: " + input[tokenPos]);
+ //       System.out.println("proximo: " + input[tokenPos +1]);
+        
+        
+        
+        
+        
         lastTokenPos = tokenPos - 1;
+        return token;
     }
     
     // return the line number of the last token got with getToken()
@@ -228,8 +263,12 @@ public class Lexer {
         return stringValue;
     }
     
-    public int getNumberValue() {
-        return numberValue;
+    public int getIntNumber() {
+        return IntNumber;
+    }
+    
+    public float getFloatNumber() {
+        return FloatNumber;
     }
     
     public char getCharValue() {
@@ -238,7 +277,8 @@ public class Lexer {
     // current token
     public Symbol token;
     private String stringValue;
-    private int numberValue;
+    private int IntNumber;
+    private float FloatNumber;
     private char charValue;
     
     private int  tokenPos;

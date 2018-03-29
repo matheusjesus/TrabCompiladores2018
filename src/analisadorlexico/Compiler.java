@@ -10,6 +10,8 @@ public class Compiler {
 
     public void compile( char []p_input ) {
         lexer = new Lexer(p_input, error);
+        error = new CompilerError(null);
+        error.setLexer(lexer);
         lexer.nextToken();
         program();
     }
@@ -91,25 +93,28 @@ public class Compiler {
             }
             lexer.nextToken();
             
-            System.out.println("antes de chamar str");
+//            System.out.println("antes de chamar str");
 
             str();
 
-            System.out.println("dps de chamar str");            
+//            System.out.println("dps de chamar str");            
             
             if(lexer.token != Symbol.SEMICOLON){
                 error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber());
             }
             lexer.nextToken();
-            lexer.nextToken(); // nao tenho mta ctz do pq mas da certo!
-            System.out.println("dps de verfiicar ; o lexer eh: " + lexer.token);
+//            lexer.nextToken(); // nao tenho mta ctz do pq mas da certo!
+//            System.out.println("dps de verfiicar ; o lexer eh: " + lexer.token);
         }
     }
     
     //str -> STRINGLITERAL
     public void str(){
-        //verificar se esta entre ""? precisaria de um Symbol STRINLITERAL!
-        //lexer.nextToken();
+        if(lexer.token != Symbol.STRINGLITERAL){
+            error.signal("Esperado um STRINGLITERAL na linha " + lexer.getLineNumber());
+        }
+        
+        lexer.nextToken();
     }
     
     //string_decl_tail -> string_decl {string_decl_tail}
@@ -274,6 +279,8 @@ public class Compiler {
 
             func_body();
 
+            System.out.println("Aqui o token eh:  " + lexer.token);
+            
             if(lexer.token != Symbol.END){
                 error.signal("A funcao deve terminar com END! Linha " + lexer.getLineNumber());
             }
@@ -319,9 +326,21 @@ public class Compiler {
     
     //stmt -> assign_stmt | read_stmt | write_stmt | return_stmt | if_stmt | for_stmt
     public void stmt(){
+        Symbol symaux;
+        
         if(lexer.token == Symbol.IDENT){
-            assign_stmt();
+            symaux = lexer.checkNextToken();
             
+            if(symaux == Symbol.LPAR){
+                call_expr();
+                if(lexer.token != Symbol.SEMICOLON){
+                    error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber());
+                }
+                lexer.nextToken();
+            }
+            else{
+                assign_stmt();
+            }            
         }else if (lexer.token == Symbol.READ){
             read_stmt();
             
@@ -336,9 +355,6 @@ public class Compiler {
             
         }else if(lexer.token == Symbol.FOR){
             for_stmt();
-        }
-        else{
-            call_expr();
         }
     }
     
@@ -473,10 +489,14 @@ public class Compiler {
     
     //postfix_expr -> primary | call_expr
     public void postfix_expr(){
+        Symbol auxsym;
+        
         if(lexer.token == Symbol.IDENT){
-            lexer.nextToken();
-            if(lexer.token == Symbol.LPAR){
-                call_expr(); //tratada para nao conferir o ID;
+        
+            auxsym = lexer.checkNextToken();
+        
+            if(auxsym == Symbol.LPAR){
+                call_expr();
             }
             else{
                 primary();
@@ -485,14 +505,11 @@ public class Compiler {
         else{
             primary();
         }
-        
-        
-        
     }
     
     //call_expr -> id ( {expr_list} )
     public void call_expr(){
-        //id(); TIREI POR CAUSA DO POSTFIX_EXPR;
+        id();
         
         if(lexer.token != Symbol.LPAR){
             error.signal("As expressoes devem estar entre parenteses! Linha " + lexer.getLineNumber());
@@ -537,17 +554,20 @@ public class Compiler {
     //primary -> (expr) | id | INTLITERAL | FLOATLITERAL
     public void primary(){
         if(lexer.token == Symbol.LPAR){
+            lexer.nextToken();
+            
             expr();
-/*  ISSO FOI FEITO POR UMA DIFICULDADE COM DECIDIR QUAL CHAMAR NO POSTFIX_EXPR
-        }
-        else if(lexer.token == Symbol.IDENT){
-            id();*/
-        }
-        else if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT){
+            
+            if(lexer.token != Symbol.RPAR){
+                error.signal("Esperado um fecha parenteses na linha " + lexer.getLineNumber());
+            }
             lexer.nextToken();
         }
-        else{
-            //eh id
+        else if(lexer.token == Symbol.IDENT){
+            id();
+        }
+        else if(lexer.token == Symbol.INTLITERAL || lexer.token == Symbol.FLOATLITERAL){
+            lexer.nextToken();
         }
     }
     
@@ -696,5 +716,4 @@ public class Compiler {
     
 	private Lexer lexer;
     private CompilerError error;
-
 }
