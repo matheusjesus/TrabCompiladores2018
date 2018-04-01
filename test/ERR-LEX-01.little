@@ -1,0 +1,12 @@
+PROGRAM p01
+BEGIN
+  FUNCTION VOID main ( ) BEGIN
+    --Neste codigo, declaramos uma variavel longa demais
+    INT a, b, abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ;
+
+    READ ( a, b );
+    abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ := a + b;
+    WRITE ( res );
+
+  END
+END

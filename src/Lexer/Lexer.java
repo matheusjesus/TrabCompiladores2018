@@ -53,7 +53,7 @@ public class Lexer {
         String backupStringValue = stringValue;
 
         
-        System.out.print("Predicao: ");
+        System.out.print("Prox: ");
         Symbol retorno = nextToken();
 
         tokenPos = backupTokenPos;
@@ -95,7 +95,10 @@ public class Lexer {
         //pula verificacao de stringliteral
         if (input[tokenPos] == '"'){
             tokenPos++;
+            
+            stringValue = "\0";
             while(input[tokenPos] != '"' && input[tokenPos] != '\0'){
+                stringValue += input[tokenPos];
                 tokenPos++;
             }
             tokenPos++;
@@ -154,24 +157,22 @@ public class Lexer {
         }
         else{
             if(Character.isLetter(input[tokenPos])){
+                int tamstr = 0;
                 while (Character.isLetter(input[tokenPos]) || Character.isDigit(input[tokenPos])){
-                    aux = aux.append(input[tokenPos]); //vai concatenando todas as letras, ainda eh string
+                    aux = aux.append(input[tokenPos]);
                     tokenPos++;
+                    tamstr++;
                 }
                 
-/*                if(!Character.isWhitespace(input[tokenPos]) && input[tokenPos] != ';' && input[tokenPos] != ',' && input[tokenPos] != '(' && input[tokenPos] != ')'){
-                    error.signal("O identificador esta fora dos padroes na linha " + lineNumber + "\nUm identificador deve ter no maximo 31 caracteres, comecar com uma letra e conter apenas letras e numeros!");
+                if(tamstr > 31){
+                    error.signal("O tamanho maximo de um identificador eh de 31 caracteres! Valor ultrapassado, linha: " + lineNumber);
                 }
-                
-                if(aux.length() > 31){
-                    error.signal("Um identificador deve ter no maximo 31 caracteres! Linha " + lineNumber);
-                }*/
             }
             
             if (aux.length() > 0){
                 Symbol temp;
-                temp = keywordsTable.get(aux.toString()); //verifica na key word hash
-                if (temp == null){ //nao eh palavra
+                temp = keywordsTable.get(aux.toString());
+                if (temp == null){
                     token = Symbol.IDENT;
                     stringValue = aux.toString();
                 }
@@ -227,17 +228,7 @@ public class Lexer {
         }        
         if (DEBUGLEXER)
             System.out.println(token.toString() + "\n\n");
-        
-        
- //       System.out.println("tamanho: " + aux.length());
- //       System.out.println("anteiror: " + input[tokenPos -1]);
- //       System.out.println("atual: " + input[tokenPos]);
- //       System.out.println("proximo: " + input[tokenPos +1]);
-        
-        
-        
-        
-        
+
         lastTokenPos = tokenPos - 1;
         return token;
     }

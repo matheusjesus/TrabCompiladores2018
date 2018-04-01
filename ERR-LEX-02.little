@@ -1,7 +1,9 @@
 PROGRAM p02
 BEGIN
   FUNCTION VOID main ( ) BEGIN
-    STRING comeco := "Insira seu peso e altura: ";
+    --Nesta funcao, fazemos a primeira declaracao de string sem o ; ao final
+  
+    STRING comeco := "Insira seu peso e altura: "
     STRING imcalto := "Seu IMC esta acima do ideal";
     STRING imcbaixo := "Seu IMC esta abaixo do ideal";
     STRING imcideal := "Seu IMC esta no padroes normais";

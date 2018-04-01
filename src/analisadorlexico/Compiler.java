@@ -93,18 +93,12 @@ public class Compiler {
             }
             lexer.nextToken();
             
-//            System.out.println("antes de chamar str");
-
             str();
 
-//            System.out.println("dps de chamar str");            
-            
             if(lexer.token != Symbol.SEMICOLON){
-                error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber());
+                error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber() + " ou anterior a ela.");
             }
             lexer.nextToken();
-//            lexer.nextToken(); // nao tenho mta ctz do pq mas da certo!
-//            System.out.println("dps de verfiicar ; o lexer eh: " + lexer.token);
         }
     }
     
@@ -143,7 +137,7 @@ public class Compiler {
             id_list();
 
             if(lexer.token != Symbol.SEMICOLON){
-                error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber());
+                error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber() + " ou anterior a ela.");
             }
             lexer.nextToken();
         }
@@ -279,8 +273,6 @@ public class Compiler {
 
             func_body();
 
-            System.out.println("Aqui o token eh:  " + lexer.token);
-            
             if(lexer.token != Symbol.END){
                 error.signal("A funcao deve terminar com END! Linha " + lexer.getLineNumber());
             }
@@ -334,7 +326,7 @@ public class Compiler {
             if(symaux == Symbol.LPAR){
                 call_expr();
                 if(lexer.token != Symbol.SEMICOLON){
-                    error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber());
+                    error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber() + " ou anterior a ela.");
                 }
                 lexer.nextToken();
             }
@@ -366,7 +358,7 @@ public class Compiler {
         assign_expr();
         
         if(lexer.token != Symbol.SEMICOLON){
-            error.signal("Esperado um ponto e virgula na linha " + lexer.getLineNumber());
+            error.signal("Esperado um ponto e virgula na linha " + lexer.getLineNumber() + " ou anterior a ela.");
         }
         lexer.nextToken();
     }
@@ -403,7 +395,7 @@ public class Compiler {
         lexer.nextToken();
 
         if(lexer.token != Symbol.SEMICOLON){
-            error.signal("Esperado ponto e virgula na linha " + lexer.getLineNumber());
+            error.signal("Esperado ponto e virgula na linha " + lexer.getLineNumber() + " ou anterior a ela.");
         }
         lexer.nextToken();        
     }
@@ -428,7 +420,7 @@ public class Compiler {
         lexer.nextToken();
 
         if(lexer.token != Symbol.SEMICOLON){
-            error.signal("Esperado ponto e virgula na linha " + lexer.getLineNumber());
+            error.signal("Esperado ponto e virgula na linha " + lexer.getLineNumber() + " ou anterior a ela.");
         }
         lexer.nextToken();        
     }
@@ -443,7 +435,7 @@ public class Compiler {
         expr();
         
         if(lexer.token != Symbol.SEMICOLON){
-            error.signal("Esperado ponto e virgula na linha " + lexer.getLineNumber());
+            error.signal("Esperado ponto e virgula na linha " + lexer.getLineNumber() + " ou anterior a ela.");
         }
         lexer.nextToken();
     }
@@ -676,7 +668,7 @@ public class Compiler {
         }
         
         if(lexer.token != Symbol.SEMICOLON){
-            error.signal("Esperado ponto e virgula na linha " + lexer.getLineNumber());
+            error.signal("Esperado ponto e virgula na linha " + lexer.getLineNumber() + " ou anterior a ela.");
         }
         lexer.nextToken();
         
@@ -687,7 +679,7 @@ public class Compiler {
         }
         
         if(lexer.token != Symbol.SEMICOLON){
-            error.signal("Esperado ponto e virgula na linha " + lexer.getLineNumber());
+            error.signal("Esperado ponto e virgula na linha " + lexer.getLineNumber() + " ou anterior a ela.");
         }
         lexer.nextToken();
         
