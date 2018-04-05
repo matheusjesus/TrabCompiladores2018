@@ -1,5 +1,3 @@
-package analisadorlexico;
-
 import java.io.*;
 
 public class Main {

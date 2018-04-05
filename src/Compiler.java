@@ -1,5 +1,3 @@
-package analisadorlexico;
-
 import Lexer.*;
 import Error.*;
 
