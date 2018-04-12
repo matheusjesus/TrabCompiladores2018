@@ -1,5 +1,7 @@
 package AST;
 
+import Lexer.Symbol;
+
 public class Func_decl {
     Symbol tipo;
     String nome;
@@ -14,6 +16,6 @@ public class Func_decl {
     }
     
     public void genC(){
-        
+        //pra chamar genC() de Param_decl_list na hora dos parametros!
     }
 }

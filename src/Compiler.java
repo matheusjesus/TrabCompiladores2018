@@ -232,16 +232,20 @@ public class Compiler {
     }
     
     //any_type -> var_type | VOID
-    public void any_type(){
+    public Symbol any_type(){
         if(lexer.token != Symbol.VOID){
-            var_type();
+            return var_type();
         }
         else if(lexer.token == Symbol.VOID){
             lexer.nextToken();
+            
+            return Symbol.VOID;
         }
         else{
            error.signal("Uma declaracao de VOID era esperada na linha " + lexer.getLineNumber());
         }
+        
+        return null;
     }
     
     //id_list -> id id_tail
@@ -295,34 +299,57 @@ public class Compiler {
 /******************** FUNCTION PARAMETER LIST ********************/      
     
     //param_decl_list -> param_decl param_decl_tail
-    public void param_decl_list(){
-        param_decl();
-        param_decl_tail();
+    public Param_decl_list param_decl_list(){
+        Param_decl_list paramlist;
+        ArrayList<Param_decl> parlist;
+        
+        parlist = param_decl();
+        parlist = param_decl_tail(parlist);
+        
+        return new Param_decl_list(parlist);
     }
     
     //param_decl -> var_type id
-    public void param_decl(){
-        var_type();
-        id();
+    public ArrayList<Param_decl> param_decl(){
+        ArrayList<Param_decl> parlist = new ArrayList();
+        Param_decl novo;
+        Symbol tipo;
+        Id id;
+        
+        tipo = var_type();
+        id = id();
+
+        novo = new Param_decl(tipo, id.getId());
+        parlist.add(novo);
+        
+        return parlist;
     }
     
     //param_decl_tail -> , param_decl param_decl_tail | empty
-    public void param_decl_tail(){
+    public ArrayList<Param_decl> param_decl_tail(ArrayList<Param_decl> parlist){
         int comma = 0;
-               
+        Param_decl novo;
+        Symbol tipo;
+        Id id;
+        
         if(lexer.token == Symbol.COMMA){
             comma = 1;
             lexer.nextToken();
         }
         
-        if(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT){
+        while(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT){
             if(comma == 0){
                 error.signal("Uma virgula era esperada na linha " + lexer.getLineNumber());
             }
             
-            param_decl();
-            param_decl_tail();
+            tipo = var_type();
+            id = id();
+
+            novo = new Param_decl(tipo, id.getId());
+            parlist.add(novo);
         }
+        
+        return parlist;
     }
     
     
@@ -332,30 +359,36 @@ public class Compiler {
     public Func_declarations func_declarations(){
         ArrayList<Func_decl> funcoes = null;
         
-        func_decl();
+        funcoes = func_decl();
         
         if(lexer.token == Symbol.FUNCTION){
-            func_decl_tail();
+            funcoes = func_decl_tail(funcoes);
         }
         
         return new Func_declarations(funcoes);
     }
     
     //func_decl -> FUNCTION any_type id ({param_decl_list}) BEGIN func_body END | empty
-    public void func_decl(){
+    public ArrayList<Func_decl> func_decl(){
+        ArrayList<Func_decl> funcoes = new ArrayList();
+        Func_decl novo;
+        Id id;
+        Symbol tipo;
+        Param_decl_list paramlist = null;
+        Func_body corpo;
+        
         if(lexer.token == Symbol.FUNCTION){
             lexer.nextToken();
 
-            any_type();
-            id();
-
+            tipo = any_type();
+            id = id();
             if(lexer.token != Symbol.LPAR){
                 error.signal("Os parametros da funcao devem estar entre parenteses! Linha " + lexer.getLineNumber());
             }
             lexer.nextToken();
 
             if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT){
-                param_decl_list();
+                paramlist = param_decl_list();
             }
 
             if(lexer.token != Symbol.RPAR){
@@ -368,28 +401,76 @@ public class Compiler {
             }
             lexer.nextToken();
 
-            func_body();
+            corpo = func_body();
 
             if(lexer.token != Symbol.END){
                 error.signal("A funcao deve terminar com END! Linha " + lexer.getLineNumber());
             }
             lexer.nextToken(); 
+            
+            novo = new Func_decl(tipo, id.getId(), paramlist, corpo);
+            
+            funcoes.add(novo);
         }
+        
+        return funcoes;
     }
     
     //func_decl_tail -> func_decl {func_decl_tail}
-    public void func_decl_tail(){
-        func_decl();
+    public ArrayList<Func_decl> func_decl_tail(ArrayList<Func_decl> funcoes){
+        Func_decl novo;
+        Id id;
+        Symbol tipo;
+        Param_decl_list paramlist = null;
+        Func_body corpo;
         
-        if(lexer.token == Symbol.FUNCTION){
-            func_decl_tail();
+        while(lexer.token == Symbol.FUNCTION){
+            lexer.nextToken();
+
+            tipo = any_type();
+            id = id();
+            if(lexer.token != Symbol.LPAR){
+                error.signal("Os parametros da funcao devem estar entre parenteses! Linha " + lexer.getLineNumber());
+            }
+            lexer.nextToken();
+
+            if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT){
+                paramlist = param_decl_list();
+            }
+
+            if(lexer.token != Symbol.RPAR){
+                error.signal("Os parametros da funcao devem estar entre parenteses! Linha " + lexer.getLineNumber());
+            }
+            lexer.nextToken();
+
+            if(lexer.token != Symbol.BEGIN){
+                error.signal("A funcao deve comecar com BEGIN! Linha " + lexer.getLineNumber());
+            }
+            lexer.nextToken();
+
+            corpo = func_body();
+
+            if(lexer.token != Symbol.END){
+                error.signal("A funcao deve terminar com END! Linha " + lexer.getLineNumber());
+            }
+            lexer.nextToken(); 
+            
+            novo = new Func_decl(tipo, id.getId(), paramlist, corpo);
+            
+            funcoes.add(novo);
         }
+        
+        return funcoes;
     }
     
     //func_body -> decl stmt_list
-    public void func_body(){
+    public Func_body func_body(){
+        Func_body corpo = null;
+        
         decl();
         stmt_list();
+        
+        return corpo;
     }
     
 
