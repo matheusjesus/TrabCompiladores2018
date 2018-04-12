@@ -12,15 +12,15 @@ public class Var_decl_list {
         VariableFloat auxfloat;
         
         intlist = new ArrayList();
-        floatlist = new ArrayList();
+        floatlist = new ArrayList();        
         
         for(i=0;i<lv.size();i++){
             if(lv.get(i).getTipo() == Symbol.INT){
-                auxint = (VariableInt) lv.get(i);
+                auxint = new VariableInt(lv.get(i).getNome(), lv.get(i).getTipo());
                 intlist.add(auxint);
             }
             else if(lv.get(i).getTipo() == Symbol.FLOAT){
-                auxfloat = (VariableFloat) lv.get(i);
+                auxfloat = new VariableFloat(lv.get(i).getNome(), lv.get(i).getTipo());
                 floatlist.add(auxfloat);
             }
         }
@@ -29,7 +29,7 @@ public class Var_decl_list {
     public void genC(){
         int i;
 
-        System.out.println("VAR_DECL_LIST:");
+        System.out.println("\n\nVAR_DECL_LIST:");
         
         if(!(intlist.isEmpty())){
             System.out.print("INT ");
@@ -50,7 +50,7 @@ public class Var_decl_list {
                 System.out.print(", " + floatlist.get(i).getNome());
             }
             
-            System.out.println(";");
+            System.out.println(";\n\n");
         }
     }
 }

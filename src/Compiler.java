@@ -133,13 +133,16 @@ public class Compiler {
 /******************** VARIABLE DECLARATION ********************/    
     
     //var_decl_list -> var_decl {var_decl_tail}
-    public ArrayList<Variable> var_decl_list(){
+    public Var_decl_list var_decl_list(){
         ArrayList<Variable> lv;
+        Var_decl_list varlist;
         
         lv = var_decl();
         lv = var_decl_tail(lv);
         
-        return lv;
+        varlist = new Var_decl_list(lv);
+        varlist.genC();
+        return varlist;
     }
     
     //var_decl -> var_type id_list ; | empty
@@ -162,7 +165,7 @@ public class Compiler {
             
             for(i=0;i < idlist.size(); i++){
                 v = new Variable(idlist.get(i).getId(), tipo);
-                System.out.println(v.getNome() + "tipo: " + v.getTipo());
+//                System.out.println(v.getNome() + "tipo: " + v.getTipo());
                 lv.add(v);
             }
         }
