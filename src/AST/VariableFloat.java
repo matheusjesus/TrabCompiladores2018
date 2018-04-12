@@ -2,7 +2,7 @@ package AST;
 
 import Lexer.Symbol;
 
-public class VariableFloat extends Variable{
+public class VariableFloat extends Var_type{
     private float floatnum;
     
     public VariableFloat(String nome, Symbol tipo) {
@@ -16,5 +16,4 @@ public class VariableFloat extends Variable{
     public float getNumer(){
         return this.floatnum;
     }
-    
 }

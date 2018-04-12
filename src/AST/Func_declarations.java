@@ -1,14 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package AST;
+import java.util.*;
 
-/**
- *
- * @author matheus
- */
 public class Func_declarations {
+    ArrayList<Func_decl> funcoes;
+
+    public Func_declarations(ArrayList<Func_decl> funcoes){
+        this.funcoes = funcoes;
+    }
     
+    public void genC(){
+        //for: printar funcao por funcao, declaracao e depois body 
+    }
 }

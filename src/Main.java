@@ -1,3 +1,5 @@
+import AST.PW;
+import AST.Program;
 import java.io.*;
 
 public class Main {
@@ -43,10 +45,14 @@ public class Main {
                 throw new RuntimeException();
             }
                 
-
+            PrintWriter printwriter = new PrintWriter(System.out, true);
+            PW pw = new PW();
+            pw.set(printwriter);
+            
             Compiler compiler = new Compiler();
         
-            compiler.compile(input);
+            Program p = compiler.compile(input);
+            p.genC(pw);
             }
     }
 }

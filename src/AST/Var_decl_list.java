@@ -6,7 +6,7 @@ public class Var_decl_list {
     ArrayList<VariableInt> intlist;
     ArrayList<VariableFloat> floatlist;
     
-    public Var_decl_list(ArrayList<Variable> lv){
+    public Var_decl_list(ArrayList<Var_type> lv){
         int i;
         VariableInt auxint;
         VariableFloat auxfloat;
@@ -26,31 +26,31 @@ public class Var_decl_list {
         }
     }
     
-    public void genC(){
+    public void genC(PW pw){
         int i;
-
-        System.out.println("\n\nVAR_DECL_LIST:");
         
         if(!(intlist.isEmpty())){
-            System.out.print("INT ");
-            System.out.print(intlist.get(0).getNome());
+            //pw.print("int ");
+            //intlist.get(0).genC();
             
             for(i=1;i<intlist.size();i++){
-                System.out.print(", " + intlist.get(i).getNome());
+                //pw.print(", ");
+                //intlist.get(i).genC();
             }
             
-            System.out.println(";");
+//            pw.println(";");
         }
         
         if(!(floatlist.isEmpty())){
-            System.out.print("FLOAT ");
-            System.out.print(floatlist.get(0).getNome());
+            //pw.print("float ");
+            //floatlist.get(0).genC();
             
             for(i=1;i<floatlist.size();i++){
-                System.out.print(", " + floatlist.get(i).getNome());
+                //pw.print(", ");
+                //floatlist.get(i).genC();
             }
             
-            System.out.println(";\n\n");
+            //pw.println(";\n");
         }
     }
 }

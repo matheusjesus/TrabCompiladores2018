@@ -1,14 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package AST;
 
-/**
- *
- * @author matheus
- */
+import java.util.ArrayList;
+
 public class String_decl_list {
+    ArrayList<VariableStr> strlist;
     
+    public String_decl_list(ArrayList<VariableStr> strlist){
+        this.strlist = strlist;
+    }
+    
+    public void genC(PW pw){
+        //printar char *str1, *str2, *str3...;
+        //chamar genC(); de cada VariableStr da lista;
+    }
 }

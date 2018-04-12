@@ -9,7 +9,7 @@ public class Program {
         this.body = body;
     }
     
-    public void genC(){
+    public void genC(PW pw){
         System.out.println("*********INICIO*********\n\n");
         ident.genC();
         body.genC();

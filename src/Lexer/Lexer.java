@@ -52,8 +52,9 @@ public class Lexer {
         float backupFloatNumber = FloatNumber;
         String backupStringValue = stringValue;
 
+        if(DEBUGLEXER)
+            System.out.print("Prox: ");
         
-        System.out.print("Prox: ");
         Symbol retorno = nextToken();
 
         tokenPos = backupTokenPos;

@@ -8,12 +8,13 @@ public class Compiler {
 	// para geracao de codigo
 	public static final boolean GC = false; 
 
-    public void compile( char []p_input ) {
+    public Program compile( char []p_input ) {
         error = new CompilerError(null);
         lexer = new Lexer(p_input, error);
         error.setLexer(lexer);
         lexer.nextToken();
         Program p = program();
+        return p;
     }
 
     
@@ -63,70 +64,112 @@ public class Compiler {
     
     //decl -> string_decl_list {decl} | var_decl_list {decl} | empty
     public Decl decl(){
+        String_decl_list strlist = null;
+        Var_decl_list varlist = null;
+        
         if(lexer.token == Symbol.STRING){
-            string_decl_list();
+            strlist = string_decl_list();
         }
         
         if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT){
-            var_decl_list();
+            varlist = var_decl_list();
         }
         
         while(lexer.token == Symbol.STRING || lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT){
             decl();
         }
         
-        return new Decl();
+        return new Decl(strlist, varlist);
     }
 
 
 /******************** GLOBAL STRING DECLARATION ********************/
     
     //string_decl_list -> string_decl {string_decl_tail}
-    public void string_decl_list(){
-        string_decl();
+    public String_decl_list string_decl_list(){
+        ArrayList<VariableStr> strlist;
+        strlist = string_decl();
         
         if(lexer.token == Symbol.STRING){
-            string_decl_tail();
+            strlist = string_decl_tail(strlist);
         }
+        
+        return new String_decl_list(strlist);
     }
     
     //string_decl -> STRING id := str ; | empty
-    public void string_decl(){
+    public ArrayList<VariableStr> string_decl(){
+        ArrayList<VariableStr> strlist = new ArrayList();
+        VariableStr novo;
+        Id idnovo = null;
+        String strnovo = null;
+        
         if(lexer.token == Symbol.STRING){
             lexer.nextToken();
 
-            id();
+            idnovo = id();
 
             if(lexer.token != Symbol.ASSIGN){
                 error.signal("Um sinal de atribuicao era esperado na linha " + lexer.getLineNumber());
             }
             lexer.nextToken();
             
-            str();
+            strnovo = str();
 
             if(lexer.token != Symbol.SEMICOLON){
                 error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber() + " ou anterior a ela.");
             }
             lexer.nextToken();
         }
+        novo = new VariableStr(idnovo.getId(), strnovo);
+        strlist.add(novo);
+        
+        return strlist;
     }
     
     //str -> STRINGLITERAL
-    public void str(){
+    public String str(){
+        String str;
+        
         if(lexer.token != Symbol.STRINGLITERAL){
             error.signal("Esperado um STRINGLITERAL na linha " + lexer.getLineNumber());
         }
         
+        str = lexer.getStringValue();
+        
         lexer.nextToken();
+        
+        return str;
     }
     
     //string_decl_tail -> string_decl {string_decl_tail}
-    public void string_decl_tail(){
-        string_decl();
+    public ArrayList<VariableStr> string_decl_tail(ArrayList<VariableStr> strlist){
+        VariableStr novo;
+        Id idnovo;
+        String strnovo;
         
-        if(lexer.token == Symbol.STRING){
-            string_decl_tail();
+        while(lexer.token == Symbol.STRING){
+            lexer.nextToken();
+            
+            idnovo = id();
+            
+            if(lexer.token != Symbol.ASSIGN){
+                error.signal("Um sinal de atribuicao era esperado na linha " + lexer.getLineNumber());
+            }
+            lexer.nextToken();
+            
+            strnovo = str();
+
+            if(lexer.token != Symbol.SEMICOLON){
+                error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber() + " ou anterior a ela.");
+            }
+            lexer.nextToken();
+            
+            novo = new VariableStr(idnovo.getId(), strnovo);
+            strlist.add(novo);
         }
+        
+        return strlist;
     }
     
 
@@ -134,23 +177,22 @@ public class Compiler {
     
     //var_decl_list -> var_decl {var_decl_tail}
     public Var_decl_list var_decl_list(){
-        ArrayList<Variable> lv;
+        ArrayList<Var_type> lv;
         Var_decl_list varlist;
         
         lv = var_decl();
         lv = var_decl_tail(lv);
         
         varlist = new Var_decl_list(lv);
-        varlist.genC();
         return varlist;
     }
     
     //var_decl -> var_type id_list ; | empty
-    public ArrayList<Variable> var_decl(){
+    public ArrayList<Var_type> var_decl(){
         Symbol tipo;
         ArrayList<Id> idlist;
-        ArrayList<Variable> lv = new ArrayList();
-        Variable v;
+        ArrayList<Var_type> lv = new ArrayList();
+        Var_type v;
         int i;
         
         if(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT){
@@ -164,7 +206,7 @@ public class Compiler {
             lexer.nextToken();
             
             for(i=0;i < idlist.size(); i++){
-                v = new Variable(idlist.get(i).getId(), tipo);
+                v = new Var_type(idlist.get(i).getId(), tipo);
 //                System.out.println(v.getNome() + "tipo: " + v.getTipo());
                 lv.add(v);
             }
@@ -234,8 +276,8 @@ public class Compiler {
     }
     
     //var_decl_tail -> var_decl {var_decl_tail}
-    public ArrayList<Variable> var_decl_tail(ArrayList<Variable> lv){
-        ArrayList<Variable> lvaux;
+    public ArrayList<Var_type> var_decl_tail(ArrayList<Var_type> lv){
+        ArrayList<Var_type> lvaux;
         int i;
         
         while(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT){
@@ -288,13 +330,15 @@ public class Compiler {
 
     //func_declarations -> func_decl {func_decl_tail}
     public Func_declarations func_declarations(){
+        ArrayList<Func_decl> funcoes = null;
+        
         func_decl();
         
         if(lexer.token == Symbol.FUNCTION){
             func_decl_tail();
         }
         
-        return new Func_declarations();
+        return new Func_declarations(funcoes);
     }
     
     //func_decl -> FUNCTION any_type id ({param_decl_list}) BEGIN func_body END | empty

@@ -2,7 +2,7 @@ package AST;
 
 import Lexer.Symbol;
 
-public class VariableInt extends Variable{
+public class VariableInt extends Var_type{
     private int intnum;
     
     public VariableInt(String nome, Symbol tipo) {
