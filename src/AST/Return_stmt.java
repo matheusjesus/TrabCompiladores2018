@@ -1,6 +1,6 @@
 package AST;
 
-class Return_stmt {
+public class Return_stmt extends Stmt{
     private Expr expr;
     
     public Return_stmt(Expr expr){

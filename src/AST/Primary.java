@@ -1,11 +1,11 @@
 package AST;
 
-class Primary {
+public class Primary {
     private Expr expr;
     private Id id;
     private int integer;
     private float flutuante;
-    private int tipo;
+    private int tipo; //1 para expr, 2 para id, 3 para int, 4 para float
     
     public Primary(Expr expr){
         this.expr = expr;

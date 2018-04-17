@@ -3,7 +3,7 @@ package AST;
 import Lexer.Symbol;
 import java.util.ArrayList;
 
-class Expr_tail {
+public class Expr_tail {
     private Symbol addop;
     private Factor factor;
     

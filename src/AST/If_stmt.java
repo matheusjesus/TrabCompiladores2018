@@ -2,7 +2,7 @@ package AST;
 
 import Lexer.Symbol;
 
-public class If_stmt {
+public class If_stmt extends Stmt {
     private Expr expr1;
     private Symbol compop;
     private Expr expr2;

@@ -2,7 +2,7 @@ package AST;
 
 import Lexer.Symbol;
 
-public class For_stmt {
+public class For_stmt extends Stmt{
     private Assign_stmt assign1;
     private Expr expr1;
     private Symbol compop;

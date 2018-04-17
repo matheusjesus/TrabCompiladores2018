@@ -464,84 +464,110 @@ public class Compiler {
     
     //func_body -> decl stmt_list
     public Func_body func_body(){
-        Func_body corpo = null;
+        Decl decl;
+        Stmt_list stmt_list;
         
-        decl();
-        stmt_list();
+        decl = decl();
+        stmt_list = stmt_list();
         
-        return corpo;
+        return new Func_body(decl, stmt_list);
     }
     
 
 /******************** STATEMENT LIST ********************/      
 
     //stmt_list -> stmt stmt_tail | empty
-    public void stmt_list(){
-        if(lexer.token == Symbol.IDENT || lexer.token == Symbol.READ || lexer.token == Symbol.WRITE || lexer.token == Symbol.RETURN || lexer.token == Symbol.IF || lexer.token == Symbol.FOR){
-            stmt();
+    public Stmt_list stmt_list(){
+        ArrayList<Stmt> stmtlist = new ArrayList();
+        Stmt novo;
         
-            stmt_tail();
+        if(lexer.token == Symbol.IDENT || lexer.token == Symbol.READ || lexer.token == Symbol.WRITE || lexer.token == Symbol.RETURN || lexer.token == Symbol.IF || lexer.token == Symbol.FOR){
+            novo = stmt();
+            
+            stmtlist.add(novo);
+            
+            stmtlist = stmt_tail(stmtlist);
         }
+        
+        return new Stmt_list(stmtlist);
     }
     
     //stmt_tail -> stmt stmt_tail | empty
-    public void stmt_tail(){
-        if(lexer.token == Symbol.IDENT || lexer.token == Symbol.READ || lexer.token == Symbol.WRITE || lexer.token == Symbol.RETURN || lexer.token == Symbol.IF || lexer.token == Symbol.FOR){
-            stmt();
-        
-            stmt_tail();
+    public ArrayList<Stmt> stmt_tail(ArrayList<Stmt> stmtlist){
+        Stmt novo;
+        while(lexer.token == Symbol.IDENT || lexer.token == Symbol.READ || lexer.token == Symbol.WRITE || lexer.token == Symbol.RETURN || lexer.token == Symbol.IF || lexer.token == Symbol.FOR){
+            novo = stmt();
+            stmtlist.add(novo);
         }
+        
+        return stmtlist;
     }
     
     //stmt -> assign_stmt | read_stmt | write_stmt | return_stmt | if_stmt | for_stmt
-    public void stmt(){
+    public Stmt stmt(){
         Symbol symaux;
+        Stmt novo = null;
         
         if(lexer.token == Symbol.IDENT){
             symaux = lexer.checkNextToken();
             
             if(symaux == Symbol.LPAR){
-                call_expr();
+                novo = call_expr();
                 if(lexer.token != Symbol.SEMICOLON){
                     error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber() + " ou anterior a ela.");
                 }
                 lexer.nextToken();
             }
             else{
-                assign_stmt();
+                novo = assign_stmt();
             }            
         }else if (lexer.token == Symbol.READ){
-            read_stmt();
+            novo = read_stmt();
             
         }else if(lexer.token == Symbol.WRITE){
-            write_stmt();
+            novo = write_stmt();
             
         }else if(lexer.token == Symbol.RETURN){
-            return_stmt();
+            novo = return_stmt();
             
         }else if(lexer.token == Symbol.IF){
-            if_stmt();
+            novo = if_stmt();
             
         }else if(lexer.token == Symbol.FOR){
-            for_stmt();
+            novo = for_stmt();
         }
+        
+        return novo;
     }
     
     
 /******************** BASIC STATEMENTS ********************/ 
     
     //assign_stmt -> assign_expr ;
-    public void assign_stmt(){
-        assign_expr();
+    public Assign_stmt assign_stmt(){
+        Id id;
+        Expr expr;
+        
+        id = id();
+        
+        if(lexer.token != Symbol.ASSIGN){
+            error.signal("Esperado uma simbolo de designacao na linha " + lexer.getLineNumber());
+        }
+        lexer.nextToken();
+        
+        expr = expr();
         
         if(lexer.token != Symbol.SEMICOLON){
             error.signal("Esperado um ponto e virgula na linha " + lexer.getLineNumber() + " ou anterior a ela.");
         }
         lexer.nextToken();
+        
+        return new Assign_stmt(id, expr);
     }
-    
+
+/*    
     //assign_expr -> id := expr
-    public void assign_expr(){
+    public void assign_expr(){       
         id();
         
         if(lexer.token != Symbol.ASSIGN){
@@ -551,9 +577,11 @@ public class Compiler {
         
         expr();
     }
+*/
     
     //read_stmt -> READ ( id_list );
-    public void read_stmt(){
+    public Read_stmt read_stmt(){
+        ArrayList<Id> idlist;
         if(lexer.token != Symbol.READ){
             error.signal("Esperado uma declaracao de READ na linha " + lexer.getLineNumber());
         }
@@ -564,7 +592,7 @@ public class Compiler {
         }
         lexer.nextToken();
 
-        id_list();
+        idlist = id_list();
         
         if(lexer.token != Symbol.RPAR){
             error.signal("Os parametros devem estar entre parenteses! Linha " + lexer.getLineNumber());
@@ -574,11 +602,15 @@ public class Compiler {
         if(lexer.token != Symbol.SEMICOLON){
             error.signal("Esperado ponto e virgula na linha " + lexer.getLineNumber() + " ou anterior a ela.");
         }
-        lexer.nextToken();        
+        lexer.nextToken();
+        
+        return new Read_stmt(idlist);
     }
     
     //write_stmt -> WRITE ( id_list );
-    public void write_stmt(){
+    public Write_stmt write_stmt(){
+        ArrayList<Id> idlist;
+        
         if(lexer.token != Symbol.WRITE){
             error.signal("Esperado uma declaracao de READ na linha " + lexer.getLineNumber());
         }
@@ -589,7 +621,7 @@ public class Compiler {
         }
         lexer.nextToken();
 
-        id_list();
+        idlist = id_list();
         
         if(lexer.token != Symbol.RPAR){
             error.signal("Os parametros devem estar entre parenteses! Linha " + lexer.getLineNumber());
@@ -600,63 +632,127 @@ public class Compiler {
             error.signal("Esperado ponto e virgula na linha " + lexer.getLineNumber() + " ou anterior a ela.");
         }
         lexer.nextToken();        
+        
+        return new Write_stmt(idlist);
     }
     
     //return_stmt -> RETURN expr;
-    public void return_stmt(){
+    public Return_stmt return_stmt(){
+        Expr expr;
+        
         if(lexer.token != Symbol.RETURN){
             error.signal("Esperado declaracao RETURN na linha " + lexer.getLineNumber());
         }
         lexer.nextToken();
         
-        expr();
+        expr = expr();
         
         if(lexer.token != Symbol.SEMICOLON){
             error.signal("Esperado ponto e virgula na linha " + lexer.getLineNumber() + " ou anterior a ela.");
         }
         lexer.nextToken();
+        
+        return new Return_stmt(expr);
     }
     
     
 /******************** EXPRESSIONS ********************/ 
 
     //expr -> factor expr_tail
-    public void expr(){
-        factor();
+    public Expr expr(){
+        Factor fact;
+        ArrayList<Expr_tail> tail;
         
-        expr_tail();
+        
+        fact = factor();
+        
+        tail = expr_tail();
+        
+        return new Expr(fact, tail); 
     }
     
     //expr_tail -> addop factor expr_tail | empty
-    public void expr_tail(){
-        if(lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS){
-            addop();
-
-            factor();
-
-            expr_tail();
+    public ArrayList<Expr_tail> expr_tail(){
+        ArrayList<Expr_tail> tail = new ArrayList();
+        Expr_tail novo;
+        Symbol addop;
+        Factor factor;
+        
+        while(lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS){
+            addop = addop();
+            factor = factor();
+            
+            novo = new Expr_tail(addop, factor);
+            
+            tail.add(novo);
         }
+        
+        return tail;
     }
     
     //factor -> postfix_expr factor_tail
-    public void factor(){
-        postfix_expr();
+    public Factor factor(){
+        Primary prim = null;
+        Call_expr callexpr = null;
+        ArrayList<Factor_tail> tail = null;
         
-        factor_tail();
+        Symbol auxsym;
+        
+        if(lexer.token == Symbol.IDENT){
+        
+            auxsym = lexer.checkNextToken();
+        
+            if(auxsym == Symbol.LPAR){
+                callexpr = call_expr();
+            }
+            else{
+                prim = primary();
+            }
+        }
+        else{
+            prim = primary();
+        }
+        
+        tail = factor_tail();
+        
+        return new Factor(prim, callexpr, tail);
     }
     
     //factor_tail -> mulop postfix_expr factor_tail | empty
-    public void factor_tail(){
-        if(lexer.token == Symbol.MULT || lexer.token == Symbol.DIV){
-            mulop();
+    public ArrayList<Factor_tail> factor_tail(){
+        Factor_tail novo = null;
+        ArrayList<Factor_tail> tail = null;
+        Symbol mulop, auxsym;
+        Primary prim;
+        Call_expr call;
+        
+        
+        while(lexer.token == Symbol.MULT || lexer.token == Symbol.DIV){
+            mulop = mulop();
             
-            postfix_expr();
+            if(lexer.token == Symbol.IDENT){
+
+                auxsym = lexer.checkNextToken();
+
+                if(auxsym == Symbol.LPAR){
+                    call = call_expr();
+                }
+                else{
+                    prim = primary();
+                }
+            }
+            else{
+                prim = primary();
+            }
             
-            factor_tail();
+            novo = new Factor_tail(mulop, prim, call);
+            tail.add(novo);
         }
+        
+        return tail;
     }
     
-    //postfix_expr -> primary | call_expr
+/*    //postfix_expr -> primary | call_expr
     public void postfix_expr(){
         Symbol auxsym;
         
@@ -675,22 +771,27 @@ public class Compiler {
             primary();
         }
     }
-    
+*/
     //call_expr -> id ( {expr_list} )
-    public void call_expr(){
-        id();
+    public Call_expr call_expr(){
+        Id id;
+        ArrayList<Expr> exprlist;
+        
+        id = id();
         
         if(lexer.token != Symbol.LPAR){
             error.signal("As expressoes devem estar entre parenteses! Linha " + lexer.getLineNumber());
         }
         lexer.nextToken();
 
-        expr_list();
+        exprlist = expr_list();
         
         if(lexer.token != Symbol.RPAR){
             error.signal("As expressoes devem estar entre parenteses! Linha " + lexer.getLineNumber());
         }
         lexer.nextToken();
+        
+        return new Call_expr(id, exprlist);
     }
 
     //expr_list -> expr expr_list_tail
@@ -721,39 +822,70 @@ public class Compiler {
     }
     
     //primary -> (expr) | id | INTLITERAL | FLOATLITERAL
-    public void primary(){
+    public Primary primary(){
+        Expr expr;
+        Id id;
+        int numint;
+        float numfloat;
+        
         if(lexer.token == Symbol.LPAR){
             lexer.nextToken();
             
-            expr();
+            expr = expr();
             
             if(lexer.token != Symbol.RPAR){
                 error.signal("Esperado um fecha parenteses na linha " + lexer.getLineNumber());
             }
             lexer.nextToken();
+            
+            return new Primary(expr);
         }
         else if(lexer.token == Symbol.IDENT){
-            id();
+            id = id();
+            
+            return new Primary(id);
         }
-        else if(lexer.token == Symbol.INTLITERAL || lexer.token == Symbol.FLOATLITERAL){
+        else if(lexer.token == Symbol.INTLITERAL){
+            numint = lexer.getIntNumber();
             lexer.nextToken();
+            
+            return new Primary(numint);
         }
+        else if(lexer.token == Symbol.FLOATLITERAL){
+            numfloat = lexer.getFloatNumber();
+            lexer.nextToken();
+            
+            return new Primary(numfloat);
+        }
+        
+        return null;
     }
     
     //addop -> +|-
-    public void addop(){
+    public Symbol addop(){
+        Symbol addop;
         if(lexer.token != Symbol.PLUS && lexer.token != Symbol.MINUS){
             error.signal("Um sinal de + ou - era esperado na linha " + lexer.getLineNumber());
         }
+        addop = lexer.token;
+        
         lexer.nextToken();
+        
+        return addop;
     }
     
     //mulop -> * | /
-    public void mulop(){
+    public Symbol mulop(){
+        Symbol mulop;
+        
         if(lexer.token != Symbol.MULT && lexer.token != Symbol.DIV){
             error.signal("Um sinal de + ou - era esperado na linha " + lexer.getLineNumber());
         }
+        mulop = lexer.token;
+        
         lexer.nextToken();
+        
+        return mulop;
     }
     
     

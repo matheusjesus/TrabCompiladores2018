@@ -1,6 +1,6 @@
 package AST;
 
-public class Assign_stmt {
+public class Assign_stmt extends Stmt{
     private Id id;
     private Expr expr;
     

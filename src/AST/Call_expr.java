@@ -2,7 +2,7 @@ package AST;
 
 import java.util.ArrayList;
 
-class Call_expr {
+public class Call_expr {
     private Id id;
     private ArrayList<Expr> expr_list;
     
