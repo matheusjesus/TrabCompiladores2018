@@ -3,20 +3,20 @@ package AST;
 import Lexer.Symbol;
 
 public class For_stmt extends Stmt{
-    private Assign_stmt assign1;
-    private Expr expr1;
-    private Symbol compop;
-    private Expr expr2;
-    private Assign_stmt assign2;
-    private Stmt_list stmt;
+    private Assign_expr assign1;
+    private Cond cond;
+    private Assign_expr assign2;
+    private Stmt_list stmt_list;
     
-    public For_stmt(Assign_stmt assign1, Expr expr1, Symbol compop, Expr expr2, Assign_stmt assign2, Stmt_list stmt){
+    public For_stmt(Assign_expr assign1, Cond cond, Assign_expr assign2, Stmt_list stmt_list){
         this.assign1 = assign1;
-        this.expr1 = expr1;
-        this.compop = compop;
-        this.expr2 = expr2;
+        this.cond = cond;
         this.assign2 = assign2;
-        this.stmt = stmt;
+        this.stmt_list = stmt_list;
+    }
+    
+    public For_stmt(){
+        
     }
     
     public void genC(){

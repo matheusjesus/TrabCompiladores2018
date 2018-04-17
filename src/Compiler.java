@@ -544,9 +544,23 @@ public class Compiler {
 /******************** BASIC STATEMENTS ********************/ 
     
     //assign_stmt -> assign_expr ;
-    public Assign_stmt assign_stmt(){
-        Id id;
-        Expr expr;
+    public Assign_expr assign_stmt(){
+        Assign_expr assexpr;
+        
+        assexpr = assign_expr();
+        
+        if(lexer.token != Symbol.SEMICOLON){
+            error.signal("Esperado um ponto e virgula na linha " + lexer.getLineNumber() + " ou anterior a ela.");
+        }
+        lexer.nextToken();
+        
+        return assexpr;
+    }
+
+    //assign_expr -> id := expr
+    public Assign_expr assign_expr(){       
+        Expr expr = null;
+        Id id = null;
         
         id = id();
         
@@ -557,27 +571,8 @@ public class Compiler {
         
         expr = expr();
         
-        if(lexer.token != Symbol.SEMICOLON){
-            error.signal("Esperado um ponto e virgula na linha " + lexer.getLineNumber() + " ou anterior a ela.");
-        }
-        lexer.nextToken();
-        
-        return new Assign_stmt(id, expr);
+        return new Assign_expr(id, expr);
     }
-
-/*    
-    //assign_expr -> id := expr
-    public void assign_expr(){       
-        id();
-        
-        if(lexer.token != Symbol.ASSIGN){
-            error.signal("Esperado uma simbolo de designacao na linha " + lexer.getLineNumber());
-        }
-        lexer.nextToken();
-        
-        expr();
-    }
-*/
     
     //read_stmt -> READ ( id_list );
     public Read_stmt read_stmt(){
@@ -678,7 +673,7 @@ public class Compiler {
         Symbol addop;
         Factor factor;
         
-        while(lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS){
+        while(lexer.token == Symbol.PLUS || lexer.token == Symbol.MINUS){            
             addop = addop();
             factor = factor();
             
@@ -721,10 +716,10 @@ public class Compiler {
     //factor_tail -> mulop postfix_expr factor_tail | empty
     public ArrayList<Factor_tail> factor_tail(){
         Factor_tail novo = null;
-        ArrayList<Factor_tail> tail = null;
+        ArrayList<Factor_tail> tail = new ArrayList();
         Symbol mulop, auxsym;
-        Primary prim;
-        Call_expr call;
+        Primary prim = null;
+        Call_expr call = null;
         
         
         while(lexer.token == Symbol.MULT || lexer.token == Symbol.DIV){
@@ -775,7 +770,7 @@ public class Compiler {
     //call_expr -> id ( {expr_list} )
     public Call_expr call_expr(){
         Id id;
-        ArrayList<Expr> exprlist;
+        ArrayList<Expr> exprlist = null;
         
         id = id();
         
@@ -784,8 +779,11 @@ public class Compiler {
         }
         lexer.nextToken();
 
-        exprlist = expr_list();
         
+        if(lexer.token != Symbol.RPAR){
+            exprlist = expr_list();
+        }
+    
         if(lexer.token != Symbol.RPAR){
             error.signal("As expressoes devem estar entre parenteses! Linha " + lexer.getLineNumber());
         }
@@ -795,30 +793,31 @@ public class Compiler {
     }
 
     //expr_list -> expr expr_list_tail
-    public void expr_list(){
-        expr();
+    public ArrayList<Expr> expr_list(){
+        ArrayList<Expr> list = new ArrayList();
+        Expr novo=null;
         
-        expr_list_tail();
+        novo = expr();
+        list.add(novo);
+        
+        list = expr_list_tail(list);
+        
+        return list;
     }
     
     //expr_list_tail -> , expr expr_list_tail | empty
-    public void expr_list_tail(){
-        int comma = 0;
+    public ArrayList<Expr> expr_list_tail(ArrayList<Expr> list){
+        Expr novo = null;
         
-        if(lexer.token == Symbol.COMMA){
-            comma = 1;
+        while(lexer.token == Symbol.COMMA){
             lexer.nextToken();
+             
+            novo = expr();
+                
+            list.add(novo);
         }
         
-        if(lexer.token == Symbol.LPAR || lexer.token == Symbol.IDENT){
-            if(comma == 0){
-                error.signal("Uma virgula era esperada na linha " + lexer.getLineNumber());
-            }
-            
-            expr();
-            
-            expr_list_tail();
-        }
+        return list;
     }
     
     //primary -> (expr) | id | INTLITERAL | FLOATLITERAL
@@ -892,7 +891,11 @@ public class Compiler {
 /******************** COMPLEX STATEMENTS AND CONDITIONS ********************/ 
 
     //if_stmt -> IF ( cond ) THEN stmt_list else_part ENDIF
-    public void if_stmt(){
+    public If_stmt if_stmt(){
+        Cond cond = null;
+        Stmt_list stmt_list = null;
+        Else_part else_part = null;
+        
         if(lexer.token != Symbol.IF){
             error.signal("Uma declaracao IF era esperada na linha " + lexer.getLineNumber());
         }
@@ -903,7 +906,7 @@ public class Compiler {
         }
         lexer.nextToken();
 
-        cond();
+        cond = cond();
         
         if(lexer.token != Symbol.RPAR){
             error.signal("As expressoes devem estar entre parenteses! Linha " + lexer.getLineNumber());
@@ -915,10 +918,10 @@ public class Compiler {
         }
         lexer.nextToken();
         
-        stmt_list();
+        stmt_list = stmt_list();
         
         if(lexer.token == Symbol.ELSE){
-            else_part();
+            else_part = else_part();
         }       
         
         
@@ -926,38 +929,57 @@ public class Compiler {
             error.signal("Uma declaracao ENDIF era esperada na linha " + lexer.getLineNumber());
         }
         lexer.nextToken();
+        
+        return new If_stmt(cond, stmt_list, else_part);
     }
     
     //else_part -> ELSE stmt_list | empty
-    public void else_part(){
+    public Else_part else_part(){
+        Stmt_list stmtlist = null;
+        
         if(lexer.token == Symbol.ELSE){
             lexer.nextToken();
             
-            stmt_list();
+            stmtlist = stmt_list();
         }
+        
+        return new Else_part(stmtlist);
     }
     
     //cond -> expr compop expr
-    public void cond(){
-        expr();
+    public Cond cond(){
+        Expr expr1, expr2;
+        Symbol compop;
         
-        compop();
+        expr1 = expr();
         
-        expr();
+        compop = compop();
+        
+        expr2 = expr();
+        
+        return new Cond(expr1, compop, expr2);
     }
     
     //compop -> < | > | =
-    public void compop(){
+    public Symbol compop(){
+        Symbol compop = null;
         if(lexer.token == Symbol.LT || lexer.token == Symbol.GT || lexer.token == Symbol.EQUAL){
+            compop = lexer.token;
             lexer.nextToken();
         }
         else{
             error.signal("Uma operacao de comparacao era esperada na linha " + lexer.getLineNumber());
         }
+        
+        return compop;
     }
     
     //for_stmt -> FOR ({assig_expr}; {cond}; {assign_expr}) stmt_list ENDFOR
-    public void for_stmt(){
+    public For_stmt for_stmt(){
+        Assign_expr assign1 = null, assign2 = null;
+        Cond cond = null;
+        Stmt_list stmtlist = null;
+        
         if(lexer.token != Symbol.FOR){
             error.signal("Uma declaracao FOR era esperada na linha " + lexer.getLineNumber());
         }
@@ -973,9 +995,9 @@ public class Compiler {
         
         //designacao
         if(lexer.token != Symbol.SEMICOLON){
-            assign_expr();
+            assign1 = assign_expr();
         }
-        
+                
         if(lexer.token != Symbol.SEMICOLON){
             error.signal("Esperado ponto e virgula na linha " + lexer.getLineNumber() + " ou anterior a ela.");
         }
@@ -984,7 +1006,7 @@ public class Compiler {
         
         //condicao de parada
         if(lexer.token != Symbol.SEMICOLON){
-            cond();
+            cond = cond();
         }
         
         if(lexer.token != Symbol.SEMICOLON){
@@ -995,7 +1017,7 @@ public class Compiler {
         
         //operacao na itereacao
         if(lexer.token != Symbol.RPAR){
-            assign_expr();
+            assign2 = assign_expr();
         }
 
         
@@ -1006,13 +1028,15 @@ public class Compiler {
         lexer.nextToken();
 
         
-        stmt_list();
+        stmtlist = stmt_list();
         
         
         if(lexer.token != Symbol.ENDFOR){
             error.signal("Uma declaracao ENDIF era esperada na linha " + lexer.getLineNumber());
         }
         lexer.nextToken();
+        
+        return new For_stmt(assign1, cond, assign2, stmtlist);
     }
     
 	private Lexer lexer;

@@ -3,17 +3,13 @@ package AST;
 import Lexer.Symbol;
 
 public class If_stmt extends Stmt {
-    private Expr expr1;
-    private Symbol compop;
-    private Expr expr2;
-    private Stmt_list stmt;
+    private Cond cond;
+    private Stmt_list stmt_list;
     private Else_part else_part;
      
-    public If_stmt(Expr expr1, Symbol compop, Expr expr2, Stmt_list stmt, Else_part else_part){
-        this.expr1 = expr1;
-        this.expr2 = expr2;
-        this.compop = compop;
-        this.stmt = stmt;
+    public If_stmt(Cond cond, Stmt_list stmt_list, Else_part else_part){
+        this.cond = cond;
+        this.stmt_list = stmt_list;
         this.else_part = else_part;
     }
     
