@@ -9,7 +9,6 @@ public class Assign_expr extends Stmt{
         this.expr = expr;
     }
     
-    private void genC(){
-        
+    private void genC(PW pw){
     }
 }
