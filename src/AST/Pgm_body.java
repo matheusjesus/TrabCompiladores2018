@@ -9,7 +9,8 @@ public class Pgm_body {
         this.fdecl = fdecl;
     }
     
-    public void genC(){
-        System.out.println("Corpo:\n");
+    public void genC(PW pw){
+        decl.genC(pw);
+        fdecl.genC(pw);
     }
 }

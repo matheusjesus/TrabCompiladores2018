@@ -7,8 +7,11 @@ public class Func_declarations {
     public Func_declarations(ArrayList<Func_decl> funcoes){
         this.funcoes = funcoes;
     }
-    
-    public void genC(){
-        //for: printar funcao por funcao, declaracao e depois body 
+
+    /*for: printar funcao por funcao, declaracao e depois body */
+    public void genC(PW pw){
+        for(Func_decl f : funcoes){
+            f.genC(pw);
+        }
     }
 }

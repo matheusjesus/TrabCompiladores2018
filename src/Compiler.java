@@ -5,8 +5,8 @@ import java.util.*;
 
 public class Compiler {
 
-	// para geracao de codigo
-	public static final boolean GC = false; 
+    // para geracao de codigo
+    public static final boolean GC = false; 
 
     public Program compile( char []p_input ) {
         error = new CompilerError(null);

@@ -8,9 +8,15 @@ public class String_decl_list {
     public String_decl_list(ArrayList<VariableStr> strlist){
         this.strlist = strlist;
     }
-    
+    /*
+    printar char *str1, *str2, *str3...;
+    chamar genC(); de cada VariableStr da lista;
+    */
     public void genC(PW pw){
-        //printar char *str1, *str2, *str3...;
-        //chamar genC(); de cada VariableStr da lista;
+        for(VariableStr str : strlist){
+            pw.println("char * " + str.getNome() + ";");
+            str.genC(pw);
+        }
+        
     }
 }

@@ -13,7 +13,11 @@ public class Cond {
         this.compop = compop;
     }
     
-    public void genC(){
+    //cond -> expr compop expr
+    public void genC(PW pw){
+        expr1.genC(pw);
+        pw.print(" " + compop.toString() + " ");
+        expr2.genC(pw);
         
     }
 }

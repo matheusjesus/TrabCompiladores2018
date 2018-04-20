@@ -18,8 +18,24 @@ public class For_stmt extends Stmt{
     public For_stmt(){
         
     }
-    
-    public void genC(){
-        
+
+    @Override
+    public void genC(PW pw) {
+        pw.print("for( ");
+        if (assign1 != null)
+            assign1.genC(pw);
+        pw.print("; ");
+        if(cond != null)
+            cond.genC(pw);
+        pw.print(";");
+        if(assign2 != null)
+            assign2.genC(pw);
+        pw.print(") {");
+        pw.add();
+        if(stmt_list != null)
+            stmt_list.genC(pw);
+        pw.print("}");
+        pw.sub();
+
     }
 }

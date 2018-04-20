@@ -15,7 +15,15 @@ public class Func_decl {
         this.corpo = corpo;
     }
     
-    public void genC(){
-        //pra chamar genC() de Param_decl_list na hora dos parametros!
+    public void genC(PW pw){
+        /* chamar genC() de Param_decl_list na hora dos parametros!*/
+        pw.print(tipo.toString() + " "+nome+"(");
+        paramlist.genC(pw);
+        pw.println(") {");
+        pw.add();
+        corpo.genC(pw);
+        pw.print("\n");
+        pw.println("}");
+        pw.sub();
     }
 }

@@ -10,9 +10,16 @@ public class Program {
     }
     
     public void genC(PW pw){
-        System.out.println("*********INICIO*********\n\n");
-        ident.genC();
-        body.genC();
-        System.out.println("\n*********FIM*********\n");
+        pw.println("#include <stdio.h>\n");
+        pw.println("#include <string.h>\n");
+        pw.println("");
+        pw.println("int main() {");
+        pw.add();
+        pw.println(ident.toString());
+        if(body != null)
+            body.genC(pw);
+        pw.println("return 0;");
+        pw.sub();
+        pw.println("}");
     }
 }

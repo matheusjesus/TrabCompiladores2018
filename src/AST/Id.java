@@ -11,7 +11,7 @@ public class Id {
         return this.name;
     }
     
-    public void genC(){
+    /*public void genC(PW pw){
         System.out.println("Identificador: " + this.name);
-    }
+    }*/
 }

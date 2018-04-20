@@ -12,7 +12,11 @@ public class Expr_tail {
         this.factor = factor;
     }
     
-    public void genC(){
+    public void genC(PW pw){
+        pw.print("("+addop.toString()+" ");
+        factor.genC(pw);
+        pw.print(")");
+            
         
     }
 }

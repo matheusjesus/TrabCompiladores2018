@@ -3,8 +3,8 @@ package AST;
 import java.util.ArrayList;
 
 public class Expr {
-    private Factor factor;
-    private ArrayList<Expr_tail> tail;
+    private final Factor factor;
+    private final ArrayList<Expr_tail> tail;
     
     public Expr(Factor factor){
         this.factor = factor;
@@ -16,7 +16,14 @@ public class Expr {
         this.tail = tail;
     }
     
-    public void genC(){
+    public void genC(PW pw){
         //se o tail == null -> nao chamar o genc do tail, apenas do factor
+        factor.genC(pw);
+        if(tail != null){
+            for(Expr_tail f : tail){
+                f.genC(pw);
+            }                
+        }
+            
     }
 }

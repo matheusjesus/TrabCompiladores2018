@@ -12,8 +12,24 @@ public class If_stmt extends Stmt {
         this.stmt_list = stmt_list;
         this.else_part = else_part;
     }
-    
-    public void genC(){
-        
+    //if_stmt -> IF ( cond ) THEN stmt_list else_part ENDIF
+
+    @Override
+    public void genC(PW pw) {
+        pw.print("if (");
+        cond.genC(pw);
+        pw.println(") {");
+        pw.add();
+        stmt_list.genC(pw);
+        if (else_part == null){
+            pw.println("}");
+            pw.sub();
+        }
+        else {
+            pw.println("} else {");
+            else_part.genC(pw);
+            pw.println("}");
+            pw.sub();
+        }
     }
 }

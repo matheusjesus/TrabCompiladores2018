@@ -15,8 +15,20 @@ public class Call_expr extends Stmt{
         this.id = id;
         this.expr_list = expr_list;
     }
-    
-    private void genC(){
-        
+
+    @Override
+    public void genC(PW pw) {
+        pw.print(id.getId()+"(");
+        if(expr_list != null) {
+            for(int i = 0; i < expr_list.size() - 1; i++){
+                expr_list.get(i).genC(pw);
+                pw.print(", ");
+                
+            }
+            expr_list.get(expr_list.size()-1).genC(pw);
+        }
+        pw.print(")");
     }
+
+    
 }

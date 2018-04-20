@@ -14,7 +14,13 @@ public class Factor_tail {
         this.call = call_expr;
     }
     
-    public void genC(){
+    public void genC(PW pw){
+        pw.print("("+mulop.toString()+" ");
+        if(primary != null)
+            primary.genC(pw);
+        else
+            call.genC(pw);
+        pw.print(")");
         
     }
 }

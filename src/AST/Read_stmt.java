@@ -9,7 +9,9 @@ public class Read_stmt extends Stmt{
         this.id_list = id_list;
     }
     
-    private void genC(){
-        
+
+    @Override
+    public void genC(PW pw) {
+
     }
 }

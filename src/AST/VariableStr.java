@@ -3,7 +3,8 @@ package AST;
 public class VariableStr {
     private String nome;
     private String str;
-    
+    /* nome (id) = A
+    str = STRINGLITERAL*/
     public VariableStr(String nome, String str){
         this.nome = nome;
         this.str = str;
@@ -13,5 +14,13 @@ public class VariableStr {
         return str;
     }
     
-    //fazer o genC() declarando a string como ponteiro, alocando ela pro tamanho correto, e copiando o valor de str pra ela.
+    public String getNome(){
+        return nome;
+    }
+    /*genC VariableStr
+    declara a string como ponteiro, aloca o tamanho com malloc e copia o valor com strcpy*/
+    public void genC(PW pw) {
+      pw.println("" + this.nome + " = malloc(sizeof("+this.str.length()+"));");
+      pw.println("strcpy(" + this.nome + ", " + this.str + ");");
+    }
 }

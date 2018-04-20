@@ -7,7 +7,15 @@ public class Else_part {
         this.stmt_list = stmt_list;
     }
     
-    public void genC(){
-        
+    public void genC(PW pw){
+        if(stmt_list != null){
+            pw.println("else");
+            pw.println("{");
+            pw.add();
+            stmt_list.genC(pw);
+            pw.println("}");
+            pw.sub();
+        }
+            
     }
 }

@@ -9,8 +9,11 @@ public class Decl {
        this.varlist = varlist;
     }
     
+    /*  decl -> string_decl_list {decl} | var_decl_list {decl} | empty */
     public void genC(PW pw){
-        stringlist.genC(pw);
-        varlist.genC(pw);
+        if(stringlist != null)
+            stringlist.genC(pw);
+        else
+            varlist.genC(pw);
     }
 }

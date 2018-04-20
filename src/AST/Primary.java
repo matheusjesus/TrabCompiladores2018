@@ -33,7 +33,22 @@ public class Primary {
         this.tipo = 4;
     }
     
-    public void genC(){
-        //perguntar cada opcao de escrita de qual tipo eh
+    public void genC(PW pw){
+        switch(tipo){
+            case 1:
+                pw.print("(");
+                expr.genC(pw);
+                pw.print(")");
+                break;
+            case 2:
+                pw.print(id.toString());
+                break;
+            case 3:
+                pw.print(Integer.toString(integer));
+                break;
+            case 4:
+                pw.print(Float.toString(flutuante));
+                break;
+        }
     } 
 }
