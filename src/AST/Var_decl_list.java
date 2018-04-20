@@ -28,29 +28,34 @@ public class Var_decl_list {
     
     public void genC(PW pw){
         int i;
-        
+       /*pw.print("int ");
+        for( VariableInt i : intlist){
+            i.genC(pw);
+        }*/
         if(!(intlist.isEmpty())){
-            //pw.print("int ");
-            //intlist.get(0).genC();
+            pw.print("int ");
+            intlist.get(0).genC(pw);
             
             for(i=1;i<intlist.size();i++){
-                //pw.print(", ");
-                //intlist.get(i).genC();
+                pw.print(", ");
+                intlist.get(i).genC(pw);
             }
-            
-//            pw.println(";");
+            //intlist.get(intlist.size()-1).genC(pw);
+
+            pw.println(";");
         }
-        
+        System.out.println("Var_decl_list OK");
+        /*
         if(!(floatlist.isEmpty())){
-            //pw.print("float ");
-            //floatlist.get(0).genC();
+            pw.print("float ");
+            floatlist.get(0).genC(pw);
             
             for(i=1;i<floatlist.size();i++){
-                //pw.print(", ");
-                //floatlist.get(i).genC();
+                pw.print(", ");
+                floatlist.get(i).genC(pw);
             }
             
-            //pw.println(";\n");
-        }
+            pw.println(";\n");
+        }*/
     }
 }

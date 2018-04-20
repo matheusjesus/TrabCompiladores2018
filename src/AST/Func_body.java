@@ -10,7 +10,9 @@ public class Func_body {
     }
     
     public void genC(PW pw){
-        declaration.genC(pw);
-        stmt_list.genC(pw);
+        if(declaration != null)
+            declaration.genC(pw);
+        if(stmt_list != null)
+            stmt_list.genC(pw);
     }
 }

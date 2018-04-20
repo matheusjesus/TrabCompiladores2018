@@ -18,4 +18,8 @@ public class Var_type {
     public String getNome(){
         return this.nome;
     }
+    
+    public void genC(PW pw){
+        pw.print(this.getNome());
+    }
 }

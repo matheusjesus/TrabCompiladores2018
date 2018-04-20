@@ -7,7 +7,12 @@ public class Return_stmt extends Stmt{
         this.expr = expr;
     }
     
-    private void genC(){
-        //return expr;
+    //return_stmt -> RETURN expr;
+    
+    @Override
+    public void genC(PW pw) {
+        pw.print("return ");
+        expr.genC(pw);
+        pw.println(" ;");
     }
 }

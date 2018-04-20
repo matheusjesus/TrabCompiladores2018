@@ -10,7 +10,14 @@ public class Pgm_body {
     }
     
     public void genC(PW pw){
-        decl.genC(pw);
-        fdecl.genC(pw);
+        if(decl != null){
+            System.out.println("[body]_decl -> decl");
+            decl.genC(pw);
+        }
+        if(fdecl != null){
+            System.out.println("[body]_fdecl->Func_declarations");
+            fdecl.genC(pw);
+
+        }
     }
 }

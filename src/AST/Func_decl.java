@@ -18,7 +18,8 @@ public class Func_decl {
     public void genC(PW pw){
         /* chamar genC() de Param_decl_list na hora dos parametros!*/
         pw.print(tipo.toString() + " "+nome+"(");
-        paramlist.genC(pw);
+        if(paramlist != null)
+            paramlist.genC(pw);
         pw.println(") {");
         pw.add();
         corpo.genC(pw);

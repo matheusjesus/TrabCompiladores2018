@@ -10,16 +10,16 @@ public class Program {
     }
     
     public void genC(PW pw){
-        pw.println("#include <stdio.h>\n");
+        pw.println("#include <stdio.h>");
         pw.println("#include <string.h>\n");
         pw.println("");
-        pw.println("int main() {");
+        //pw.println("int main() {");
         pw.add();
-        pw.println(ident.toString());
+        //pw.println(ident.getId());
         if(body != null)
             body.genC(pw);
-        pw.println("return 0;");
+        //pw.println("return 0;");
         pw.sub();
-        pw.println("}");
+        //pw.println("}");
     }
 }

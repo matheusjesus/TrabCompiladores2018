@@ -8,8 +8,11 @@ public class Func_declarations {
         this.funcoes = funcoes;
     }
 
+    //func_declarations -> func_decl {func_decl_tail}
+
     /*for: printar funcao por funcao, declaracao e depois body */
     public void genC(PW pw){
+        System.out.println("[Func_declarations]->Func_decl");
         for(Func_decl f : funcoes){
             f.genC(pw);
         }

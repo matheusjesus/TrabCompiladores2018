@@ -11,9 +11,16 @@ public class Decl {
     
     /*  decl -> string_decl_list {decl} | var_decl_list {decl} | empty */
     public void genC(PW pw){
-        if(stringlist != null)
+        if(stringlist != null){
+            System.out.println("[decl]->String_decl_list");
             stringlist.genC(pw);
-        else
-            varlist.genC(pw);
+
+        }
+        else{
+            System.out.println("[decl]->var_decl_list");
+            if(varlist != null)
+                varlist.genC(pw);
+            
+        }
     }
 }
