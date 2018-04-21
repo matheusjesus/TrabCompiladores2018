@@ -40,8 +40,6 @@ public class Lexer {
         keywordsTable.put( "ENDFOR", Symbol.ENDFOR );
         keywordsTable.put( "FLOAT", Symbol.FLOAT );
         keywordsTable.put( "INT", Symbol.INT );
-        keywordsTable.put( "INTNUMBER", Symbol.INTLITERAL );
-        keywordsTable.put( "FloatNumber", Symbol.INTLITERAL );
         keywordsTable.put( "VOID", Symbol.VOID );
         keywordsTable.put( "STRING", Symbol.STRING );
     }
