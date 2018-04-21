@@ -206,7 +206,6 @@ public class Compiler {
             
             for(i=0;i < idlist.size(); i++){
                 v = new Var_type(idlist.get(i).getId(), tipo);
-//                System.out.println(v.getNome() + "tipo: " + v.getTipo());
                 lv.add(v);
             }
         }
