@@ -3,7 +3,7 @@ package AST;
 public class Primary {
     private Expr expr = null;
     private Id id = null;
-    private int intege;
+    private int inteiro;
     private float flutuante;
     private int tipo; //1 para expr, 2 para id, 3 para int, 4 para float
     
@@ -22,7 +22,7 @@ public class Primary {
     public Primary(int num){
         this.expr = null;
         this.id = null;
-        this.intege = num;
+        this.inteiro = num;
         this.tipo = 3;
     }
     
@@ -44,8 +44,7 @@ public class Primary {
                 pw.print(id.getId());
                 break;
             case 3:
-                System.out.println("/////////////////////");
-                pw.print(""+intege);
+                pw.print(""+inteiro);
                 break;
             case 4:
                 pw.print(""+flutuante);
