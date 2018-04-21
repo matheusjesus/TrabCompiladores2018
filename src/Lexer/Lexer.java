@@ -6,7 +6,7 @@ import Error.*;
 public class Lexer {
 
 	// apenas para verificacao lexica
-	public static final boolean DEBUGLEXER = true; 
+	public static final boolean DEBUGLEXER = false; 
     
     public Lexer( char []input, CompilerError error ) {
         this.input = input;
@@ -19,11 +19,11 @@ public class Lexer {
     }
     
     // contains the keywords
-    static private Hashtable<String, Symbol> keywordsTable;
+    private static final Hashtable<String, Symbol> keywordsTable;
     
     // this code will be executed only once for each program execution
     static {
-        keywordsTable = new Hashtable<String, Symbol>();
+        keywordsTable = new Hashtable<>();
         keywordsTable.put( "BEGIN", Symbol.BEGIN );
         keywordsTable.put( "END", Symbol.END );
         keywordsTable.put( "PROGRAM", Symbol.PROGRAM);
@@ -42,7 +42,6 @@ public class Lexer {
         keywordsTable.put( "INT", Symbol.INT );
         keywordsTable.put( "INTNUMBER", Symbol.INTLITERAL );
         keywordsTable.put( "FloatNumber", Symbol.INTLITERAL );
-
         keywordsTable.put( "VOID", Symbol.VOID );
         keywordsTable.put( "STRING", Symbol.STRING );
     }
@@ -143,7 +142,6 @@ public class Lexer {
                 if(DEBUGLEXER)
                     System.out.println(token.toString() + "\n\n");
                 
-                nextToken();
             }
             else{
                 //converte string para inteiro
@@ -151,12 +149,11 @@ public class Lexer {
                 if (IntNumber > MaxValueInteger){
                     error.signal("O valor e maior que o valor maximo de um int.");
                 }
-                token = Symbol.INTLITERAL;
-
+                this.token = Symbol.INTLITERAL;
                 if(DEBUGLEXER)
                     System.out.println(token.toString() + "\n\n");
                 
-                nextToken();
+                //nextToken();
             }            
         }
         else{
