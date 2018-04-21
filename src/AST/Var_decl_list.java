@@ -3,8 +3,8 @@ import Lexer.Symbol;
 import java.util.*;
         
 public class Var_decl_list {
-    ArrayList<VariableInt> intlist;
-    ArrayList<VariableFloat> floatlist;
+    ArrayList<VariableInt> intlist = null;
+    ArrayList<VariableFloat> floatlist = null;
     
     public Var_decl_list(ArrayList<Var_type> lv){
         int i;
@@ -28,7 +28,6 @@ public class Var_decl_list {
     
     public void genC(PW pw){
         int i;
-      
         if(!(intlist.isEmpty())){
             pw.print("int ", true);
             intlist.get(0).genC(pw);

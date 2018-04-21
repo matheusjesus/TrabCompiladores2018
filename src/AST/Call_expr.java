@@ -26,7 +26,11 @@ public class Call_expr{
             }
             expr_list.get(expr_list.size()-1).genC(pw);
         }
-        pw.print(")", false);
+        //pw.println(")", false);
+        if(ident == true)
+            pw.println(");", false);
+        else
+            pw.print(")", false);
     }
 
     

@@ -12,7 +12,7 @@ public class Expr_tail {
     }
     
     public void genC(PW pw){
-        pw.print(""+addop.toString()+" ", false);
+        pw.print(" "+addop.toString()+" ", false);
         factor.genC(pw);        
     }
 }

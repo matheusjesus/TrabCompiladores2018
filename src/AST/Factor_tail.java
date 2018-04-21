@@ -14,7 +14,7 @@ public class Factor_tail {
     }
     
     public void genC(PW pw){
-        pw.print(""+mulop.toString()+" ", false);
+        pw.print(" "+mulop.toString()+" ", false);
         if(primary != null)
             primary.genC(pw);
         else

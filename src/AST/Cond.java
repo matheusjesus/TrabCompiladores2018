@@ -16,7 +16,11 @@ public class Cond {
     //cond -> expr compop expr
     public void genC(PW pw){
         expr1.genC(pw);
-        pw.print(" " + compop.toString() + " ", false);
+        if(compop == Symbol.EQUAL)
+            pw.print(" == ", false);
+        else
+            pw.print(" " + compop.toString() + " ", false);
+
         expr2.genC(pw);
         
     }

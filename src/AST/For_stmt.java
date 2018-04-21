@@ -20,7 +20,7 @@ public class For_stmt{
         pw.print("; ", false);
         if(cond != null)
             cond.genC(pw);
-        pw.print(";", false);
+        pw.print("; ", false);
         if(assign2 != null)
             assign2.genC(pw, false);
         pw.println(") {", false);
