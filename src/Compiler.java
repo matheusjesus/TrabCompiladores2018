@@ -828,8 +828,8 @@ public class Compiler {
     
     //primary -> (expr) | id | INTLITERAL | FLOATLITERAL
     public Primary primary(){
-        Expr expr;
-        Id id;
+        Expr expr = null;
+        Id id = null;
         int numint;
         float numfloat;
         
@@ -852,6 +852,7 @@ public class Compiler {
         }
         else if(lexer.token == Symbol.INTLITERAL){
             numint = lexer.getIntNumber();
+            System.out.println("/////////////////////4545--------"+numint);
             lexer.nextToken();
             
             return new Primary(numint);
@@ -954,7 +955,8 @@ public class Compiler {
     
     //cond -> expr compop expr
     public Cond cond(){
-        Expr expr1, expr2;
+        Expr expr1 = null;
+        Expr expr2 = null;
         Symbol compop;
         
         expr1 = expr();

@@ -6,7 +6,7 @@ import Error.*;
 public class Lexer {
 
 	// apenas para verificacao lexica
-	public static final boolean DEBUGLEXER = false; 
+	public static final boolean DEBUGLEXER = true; 
     
     public Lexer( char []input, CompilerError error ) {
         this.input = input;
@@ -40,6 +40,9 @@ public class Lexer {
         keywordsTable.put( "ENDFOR", Symbol.ENDFOR );
         keywordsTable.put( "FLOAT", Symbol.FLOAT );
         keywordsTable.put( "INT", Symbol.INT );
+        keywordsTable.put( "INTNUMBER", Symbol.INTLITERAL );
+        keywordsTable.put( "FloatNumber", Symbol.INTLITERAL );
+
         keywordsTable.put( "VOID", Symbol.VOID );
         keywordsTable.put( "STRING", Symbol.STRING );
     }
