@@ -29,7 +29,7 @@ public class Var_decl_list {
     
     public void genC(PW pw){
         int i;
-        if(intlist != null){
+        if(!(intlist.isEmpty())){
             pw.print("int ", true);
             for(i = 0; i < intlist.size() - 1; i ++){
                 intlist.get(i).genC(pw);
@@ -48,7 +48,7 @@ public class Var_decl_list {
                 floatlist.get(i).genC(pw);
             }
             
-            pw.println(";", false);
+            pw.println(";\n", false);
         }
     }
 }
