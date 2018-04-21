@@ -852,7 +852,6 @@ public class Compiler {
         }
         else if(lexer.token == Symbol.INTLITERAL){
             numint = lexer.getIntNumber();
-            System.out.println("/////////////////////4545--------"+numint);
             lexer.nextToken();
             
             return new Primary(numint);
