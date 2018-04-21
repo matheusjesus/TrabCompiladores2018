@@ -14,7 +14,7 @@ public class Read_stmt{
 
     public void genC(PW pw) {
         for(Id i : id_list){
-            pw.println("scanf(\"%\","+i.getId()+");");
+            pw.println("scanf(\"%\", &"+i.getId()+");", true);
         }
 
     }

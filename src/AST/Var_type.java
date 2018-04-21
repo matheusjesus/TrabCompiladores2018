@@ -20,6 +20,6 @@ public class Var_type {
     }
     
     public void genC(PW pw){
-        pw.print(getNome());
+        pw.print(getNome(), false);
     }
 }

@@ -20,7 +20,8 @@ public class VariableStr {
     /*genC VariableStr
     declara a string como ponteiro, aloca o tamanho com malloc e copia o valor com strcpy*/
     public void genC(PW pw) {
-      pw.println("" + this.nome + " = malloc(sizeof("+this.str.length()+"));");
-      pw.println("strcpy(" + this.nome + ",  \"" + this.str + "\");");
+      pw.println("" + this.nome + " = (char *) malloc(sizeof(char) * "+this.str.length()+"));", true);
+      pw.println("strcpy(" + this.nome + ",  \"" + this.str + "\");", true);
+      pw.print("\n", false);
     }
 }

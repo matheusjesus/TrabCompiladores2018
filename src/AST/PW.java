@@ -27,13 +27,17 @@ public class PW {
        currentIndent = indent;
     }
 
-    public void print( String s ) {
-       out.print( space.substring(0, currentIndent) );
-       out.print(s);
+    public void print( String s, boolean ident ) {
+        if(ident == true)
+            out.print( space.substring(0, currentIndent) );
+        
+        out.print(s);
     }
 
-    public void println( String s ) {
-       out.print( space.substring(0, currentIndent) );
-       out.println(s);
+    public void println( String s, boolean ident ) {
+        if(ident == true)
+            out.print( space.substring(0, currentIndent) );
+       
+        out.println(s);
     }
 }

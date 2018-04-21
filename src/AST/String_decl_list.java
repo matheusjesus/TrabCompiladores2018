@@ -14,7 +14,7 @@ public class String_decl_list {
     */
     public void genC(PW pw){
         for(VariableStr str : strlist){
-            pw.println("char * " + str.getNome() + ";");
+            pw.println("char * " + str.getNome() + ";", true);
             str.genC(pw);
         }
         

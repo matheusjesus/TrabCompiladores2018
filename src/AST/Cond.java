@@ -16,7 +16,7 @@ public class Cond {
     //cond -> expr compop expr
     public void genC(PW pw){
         expr1.genC(pw);
-        pw.print(" " + compop.toString() + " ");
+        pw.print(" " + compop.toString() + " ", false);
         expr2.genC(pw);
         
     }

@@ -16,17 +16,17 @@ public class Call_expr{
         this.expr_list = expr_list;
     }
 
-    public void genC(PW pw) {
-        pw.print(id.getId()+"(");
+    public void genC(PW pw, boolean ident) {
+        pw.print(id.getId()+"(", ident);
         if(expr_list != null) {
             for(int i = 0; i < expr_list.size() - 1; i++){
                 expr_list.get(i).genC(pw);
-                pw.print(", ");
+                pw.print(", ", false);
                 
             }
             expr_list.get(expr_list.size()-1).genC(pw);
         }
-        pw.print(")");
+        pw.print(")", false);
     }
 
     

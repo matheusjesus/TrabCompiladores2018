@@ -30,27 +30,27 @@ public class Var_decl_list {
         int i;
       
         if(!(intlist.isEmpty())){
-            pw.print("int ");
+            pw.print("int ", true);
             intlist.get(0).genC(pw);
-            
+
             for(i=1;i<intlist.size();i++){
-                pw.print(", ");
+                pw.print(", ", false);
                 intlist.get(i).genC(pw);
             }
 
-            pw.println(";");
+            pw.println(";", false);
         }
         
         if(!(floatlist.isEmpty())){
-            pw.print("float ");
+            pw.print("float ", true);
             floatlist.get(0).genC(pw);
             
             for(i=1;i<floatlist.size();i++){
-                pw.print(", ");
+                pw.print(", ", false);
                 floatlist.get(i).genC(pw);
             }
             
-            pw.println(";");
+            pw.println(";", false);
         }
     }
 }

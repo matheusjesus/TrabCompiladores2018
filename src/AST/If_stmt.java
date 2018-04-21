@@ -15,20 +15,20 @@ public class If_stmt{
     //if_stmt -> IF ( cond ) THEN stmt_list else_part ENDIF
 
     public void genC(PW pw) {
-        pw.print("if (");
+        pw.print("if (", true);
         cond.genC(pw);
-        pw.println(") {");
+        pw.println(") {", false);
         pw.add();
         stmt_list.genC(pw);
+        pw.sub();
         if (else_part == null){
-            pw.println("}");
-            pw.sub();
+         //   pw.sub();
+            pw.println("}", true);
         }
         else {
-            pw.println("} else {");
+            pw.print("} ", true);
             else_part.genC(pw);
-            pw.println("}");
-            pw.sub();
+//            pw.println("}", true);
         }
     }
 }

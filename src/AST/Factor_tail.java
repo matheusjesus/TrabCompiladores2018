@@ -14,12 +14,10 @@ public class Factor_tail {
     }
     
     public void genC(PW pw){
-        pw.print("("+mulop.toString()+" ");
+        pw.print(""+mulop.toString()+" ", false);
         if(primary != null)
             primary.genC(pw);
         else
-            call.genC(pw);
-        pw.print(")");
-        
+            call.genC(pw, false);        
     }
 }

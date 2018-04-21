@@ -22,10 +22,10 @@ public class Stmt {
     public void genC(PW pw){
        
         if(callexpr != null)
-           callexpr.genC(pw);
+           callexpr.genC(pw, true);
         
         else if(assign != null)
-            assign.genC(pw);
+            assign.genC(pw, true);
         
         else if(read != null)
             read.genC(pw);

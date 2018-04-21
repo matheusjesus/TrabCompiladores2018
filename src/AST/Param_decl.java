@@ -15,6 +15,6 @@ public class Param_decl {
     genC(): printar o tipo e o nome
     */
     public void genC(PW pw) {
-        pw.print(tipo.toString() + " " + nome);
+        pw.print(tipo.toString() + " " + nome, false);
     }
 }

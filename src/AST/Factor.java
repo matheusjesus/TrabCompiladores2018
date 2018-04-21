@@ -17,7 +17,7 @@ public class Factor {
         if(primary != null) 
             primary.genC(pw);
         else if (call != null)
-            call.genC(pw);
+            call.genC(pw, false);
         
         if (tail != null){
             for(Factor_tail f: tail)

@@ -14,21 +14,21 @@ public class For_stmt{
     }
 
     public void genC(PW pw) {
-        pw.print("for( ");
+        pw.print("for( ", true);
         if (assign1 != null)
-            assign1.genC(pw);
-        pw.print("; ");
+            assign1.genC(pw, false);
+        pw.print("; ", false);
         if(cond != null)
             cond.genC(pw);
-        pw.print(";");
+        pw.print(";", false);
         if(assign2 != null)
-            assign2.genC(pw);
-        pw.print(") {");
+            assign2.genC(pw, false);
+        pw.println(") {", false);
         pw.add();
         if(stmt_list != null)
             stmt_list.genC(pw);
-        pw.print("}");
+        
         pw.sub();
-
+        pw.print("}", true);
     }
 }

@@ -36,18 +36,18 @@ public class Primary {
     public void genC(PW pw){
         switch(tipo){
             case 1:
-                pw.print("(");
+                pw.print("(", false);
                 expr.genC(pw);
-                pw.print(")");
+                pw.print(")", false);
                 break;
             case 2:
-                pw.print(id.getId());
+                pw.print(id.getId(), false);
                 break;
             case 3:
-                pw.print(""+inteiro);
+                pw.print(""+inteiro, false);
                 break;
             case 4:
-                pw.print(""+flutuante);
+                pw.print(""+flutuante, false);
                 break;
         }
     } 

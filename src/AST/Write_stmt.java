@@ -12,7 +12,7 @@ public class Write_stmt{
     
     public void genC(PW pw) {
         for(Id i : id_list){
-            pw.println("print(\""+i.getId()+"\");");
+            pw.println("print(\"%\", "+i.getId()+");", true);
         }
     }
 }

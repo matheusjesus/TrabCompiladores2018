@@ -9,11 +9,11 @@ public class Assign_expr{
         this.expr = expr;
     }
 
-    public void genC(PW pw) {
-        pw.print(id.getId()+" = ");
+    public void genC(PW pw, boolean ident) {
+        pw.print(id.getId()+" = ", ident);
         expr.genC(pw);
-        pw.println(";");
-    }
-    
-    
+        if(ident == true){
+            pw.println(";", false);
+        }
+    }    
 }

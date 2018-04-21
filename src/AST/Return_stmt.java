@@ -10,8 +10,8 @@ public class Return_stmt{
     //return_stmt -> RETURN expr;
     
     public void genC(PW pw) {
-        pw.print("return ");
+        pw.print("return ", true);
         expr.genC(pw);
-        pw.println(" ;");
+        pw.println(" ;", false);
     }
 }
