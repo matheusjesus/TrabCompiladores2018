@@ -65,18 +65,17 @@ public class Compiler {
     public Decl decl(){
         String_decl_list strlist = null;
         Var_decl_list varlist = null;
+        do{
+            //decl();
+            if(lexer.token == Symbol.STRING){
+                strlist = string_decl_list();
+            }
         
-        if(lexer.token == Symbol.STRING){
-            strlist = string_decl_list();
-        }
-        
-        if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT){
-            varlist = var_decl_list();
-        }
-        
-        while(lexer.token == Symbol.STRING || lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT){
-            decl();
-        }
+            if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT){
+                varlist = var_decl_list();
+            }
+        } while(lexer.token == Symbol.STRING || lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT);
+
         
         return new Decl(strlist, varlist);
     }
@@ -192,7 +191,6 @@ public class Compiler {
         ArrayList<Id> idlist;
         ArrayList<Var_type> lv = new ArrayList();
         Var_type v;
-        int i;
         
         if(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT){
             tipo = var_type();
@@ -203,9 +201,8 @@ public class Compiler {
                 error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber() + " ou anterior a ela.");
             }
             lexer.nextToken();
-            
-            for(i=0;i < idlist.size(); i++){
-                v = new Var_type(idlist.get(i).getId(), tipo);
+            for(Id i : idlist){
+                v = new Var_type(i.getId(), tipo);
                 lv.add(v);
             }
         }
@@ -280,14 +277,14 @@ public class Compiler {
     //var_decl_tail -> var_decl {var_decl_tail}
     public ArrayList<Var_type> var_decl_tail(ArrayList<Var_type> lv){
         ArrayList<Var_type> lvaux;
-        int i;
+        //int i;
         
         while(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT){
             lvaux = var_decl();
-            
-            for(i=0;i<lvaux.size();i++){
-                lv.add(lvaux.get(i));
+            for(Var_type v : lvaux){
+                lv.add(v);
             }
+            
         }
         
         return lv;
