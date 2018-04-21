@@ -506,38 +506,44 @@ public class Compiler {
     //stmt -> assign_stmt | read_stmt | write_stmt | return_stmt | if_stmt | for_stmt
     public Stmt stmt(){
         Symbol symaux;
-        Stmt novo = null;
+        Call_expr callexpr = null;
+        Assign_expr assign = null;
+        Read_stmt read = null;
+        Write_stmt write = null;
+        Return_stmt return_stmt = null;
+        If_stmt if_stmt = null;
+        For_stmt for_stmt = null;
         
         if(lexer.token == Symbol.IDENT){
             symaux = lexer.checkNextToken();
             
             if(symaux == Symbol.LPAR){
-                novo = call_expr();
+                callexpr = call_expr();
                 if(lexer.token != Symbol.SEMICOLON){
                     error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber() + " ou anterior a ela.");
                 }
                 lexer.nextToken();
             }
             else{
-                novo = assign_stmt();
+                assign = assign_stmt();
             }            
         }else if (lexer.token == Symbol.READ){
-            novo = read_stmt();
+            read = read_stmt();
             
         }else if(lexer.token == Symbol.WRITE){
-            novo = write_stmt();
+            write = write_stmt();
             
         }else if(lexer.token == Symbol.RETURN){
-            novo = return_stmt();
+            return_stmt = return_stmt();
             
         }else if(lexer.token == Symbol.IF){
-            novo = if_stmt();
+            if_stmt = if_stmt();
             
         }else if(lexer.token == Symbol.FOR){
-            novo = for_stmt();
+            for_stmt = for_stmt();
         }
         
-        return novo;
+        return new Stmt(callexpr, assign, read, write, return_stmt, if_stmt, for_stmt);
     }
     
     

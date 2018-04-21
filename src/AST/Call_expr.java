@@ -2,7 +2,7 @@ package AST;
 
 import java.util.ArrayList;
 
-public class Call_expr extends Stmt{
+public class Call_expr{
     private Id id;
     private ArrayList<Expr> expr_list;
     
@@ -16,7 +16,6 @@ public class Call_expr extends Stmt{
         this.expr_list = expr_list;
     }
 
-    @Override
     public void genC(PW pw) {
         pw.print(id.getId()+"(");
         if(expr_list != null) {

@@ -1,6 +1,6 @@
 package AST;
 
-public class Assign_expr extends Stmt {
+public class Assign_expr{
     private final Id id;
     private final Expr expr;
     
@@ -9,7 +9,6 @@ public class Assign_expr extends Stmt {
         this.expr = expr;
     }
 
-    @Override
     public void genC(PW pw) {
         pw.print(id.getId()+" = ");
         expr.genC(pw);

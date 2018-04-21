@@ -2,7 +2,7 @@ package AST;
 
 import Lexer.Symbol;
 
-public class For_stmt extends Stmt{
+public class For_stmt{
     private Assign_expr assign1;
     private Cond cond;
     private Assign_expr assign2;
@@ -19,7 +19,6 @@ public class For_stmt extends Stmt{
         
     }
 
-    @Override
     public void genC(PW pw) {
         pw.print("for( ");
         if (assign1 != null)
