@@ -8,35 +8,34 @@ public class Var_decl_list {
     
     public Var_decl_list(ArrayList<Var_type> lv){
         int i;
-        VariableInt auxint;
-        VariableFloat auxfloat;
+        VariableInt auxint = null;
+        VariableFloat auxfloat = null;
         
-        intlist = new ArrayList();
-        floatlist = new ArrayList();        
-        
-        for(i=0;i<lv.size();i++){
-            if(lv.get(i).getTipo() == Symbol.INT){
-                auxint = new VariableInt(lv.get(i).getNome(), lv.get(i).getTipo());
-                intlist.add(auxint);
+        this.intlist = new ArrayList();
+        this.floatlist = new ArrayList();        
+        for(Var_type v : lv){
+            if(v.getTipo() == Symbol.INT){
+                auxint = new VariableInt(v.getNome(), v.getTipo());
+                this.intlist.add(auxint);
             }
-            else if(lv.get(i).getTipo() == Symbol.FLOAT){
-                auxfloat = new VariableFloat(lv.get(i).getNome(), lv.get(i).getTipo());
-                floatlist.add(auxfloat);
+            
+            if(v.getTipo() == Symbol.FLOAT){
+                auxfloat = new VariableFloat(v.getNome(), v.getTipo());
+                this.floatlist.add(auxfloat);
             }
         }
+        
     }
     
     public void genC(PW pw){
         int i;
-        if(!(intlist.isEmpty())){
+        if(intlist != null){
             pw.print("int ", true);
-            intlist.get(0).genC(pw);
-
-            for(i=1;i<intlist.size();i++){
-                pw.print(", ", false);
+            for(i = 0; i < intlist.size() - 1; i ++){
                 intlist.get(i).genC(pw);
+                pw.print(", ", false);
             }
-
+            intlist.get(intlist.size()-1).genC(pw);
             pw.println(";", false);
         }
         
@@ -44,7 +43,7 @@ public class Var_decl_list {
             pw.print("float ", true);
             floatlist.get(0).genC(pw);
             
-            for(i=1;i<floatlist.size();i++){
+            for(i=1; i < floatlist.size(); i++){
                 pw.print(", ", false);
                 floatlist.get(i).genC(pw);
             }

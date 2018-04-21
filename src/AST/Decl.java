@@ -14,7 +14,7 @@ public class Decl {
         if(stringlist != null)
             stringlist.genC(pw);
         
-        else if(varlist != null)
+        if(varlist != null)
             varlist.genC(pw);
             
         
