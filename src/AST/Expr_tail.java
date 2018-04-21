@@ -1,11 +1,10 @@
 package AST;
 
 import Lexer.Symbol;
-import java.util.ArrayList;
 
 public class Expr_tail {
-    private Symbol addop;
-    private Factor factor;
+    private final Symbol addop;
+    private final Factor factor;
     
     public Expr_tail(Symbol addop, Factor factor){
         this.addop = addop;

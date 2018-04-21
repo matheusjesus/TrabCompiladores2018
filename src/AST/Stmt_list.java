@@ -1,11 +1,10 @@
 package AST;
 
-import Lexer.Symbol;
 import java.util.ArrayList;
 
 
 public class Stmt_list{
-    private ArrayList<Stmt> stmtlist;
+    private final ArrayList<Stmt> stmtlist;
     
 
     public Stmt_list(ArrayList<Stmt> stmtlist) {

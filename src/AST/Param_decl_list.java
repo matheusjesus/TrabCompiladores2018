@@ -10,6 +10,8 @@ public class Param_decl_list {
     }
     /* ({param_decl_list}) */
     public void genC(PW pw){
-        System.out.println("teste");
+        for(Param_decl p : parlist){
+            p.genC(pw);
+        }
     }
 }

@@ -1,7 +1,7 @@
 package AST;
 
 public class Return_stmt{
-    private Expr expr;
+    private final Expr expr;
     
     public Return_stmt(Expr expr){
         this.expr = expr;

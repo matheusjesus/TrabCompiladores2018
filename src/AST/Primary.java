@@ -1,9 +1,9 @@
 package AST;
 
 public class Primary {
-    private Expr expr;
-    private Id id;
-    private int integer;
+    private Expr expr = null;
+    private Id id = null;
+    private int intege;
     private float flutuante;
     private int tipo; //1 para expr, 2 para id, 3 para int, 4 para float
     
@@ -22,7 +22,7 @@ public class Primary {
     public Primary(int num){
         this.expr = null;
         this.id = null;
-        this.integer = num;
+        this.intege = num;
         this.tipo = 3;
     }
     
@@ -41,13 +41,14 @@ public class Primary {
                 pw.print(")");
                 break;
             case 2:
-                pw.print(id.toString());
+                pw.print(id.getId());
                 break;
             case 3:
-                pw.print(Integer.toString(integer));
+                System.out.println("/////////////////////");
+                pw.print(""+intege);
                 break;
             case 4:
-                pw.print(Float.toString(flutuante));
+                pw.print(""+flutuante);
                 break;
         }
     } 

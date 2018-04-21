@@ -18,7 +18,8 @@ public class Expr {
     
     public void genC(PW pw){
         //se o tail == null -> nao chamar o genc do tail, apenas do factor
-        factor.genC(pw);
+        if(factor != null)
+            factor.genC(pw);
         if(tail != null){
             for(Expr_tail f : tail){
                 f.genC(pw);

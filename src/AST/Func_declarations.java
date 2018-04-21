@@ -12,7 +12,6 @@ public class Func_declarations {
 
     /*for: printar funcao por funcao, declaracao e depois body */
     public void genC(PW pw){
-        System.out.println("[Func_declarations]->Func_decl");
         for(Func_decl f : funcoes){
             f.genC(pw);
         }

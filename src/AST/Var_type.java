@@ -3,8 +3,8 @@ package AST;
 import Lexer.*;
 
 public class Var_type {
-    private String nome;
-    private Symbol tipo;
+    private final String nome;
+    private final Symbol tipo;
     
     public Var_type(String nome, Symbol tipo) {
         this.nome = nome;
@@ -20,6 +20,6 @@ public class Var_type {
     }
     
     public void genC(PW pw){
-        pw.print(this.getNome());
+        pw.print(getNome());
     }
 }

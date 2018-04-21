@@ -1,8 +1,8 @@
 package AST;
 
 public class Pgm_body {
-    private Decl decl;
-    private Func_declarations fdecl;
+    private final Decl decl;
+    private final Func_declarations fdecl;
     
     public Pgm_body(Decl decl, Func_declarations fdecl){
         this.decl = decl;
@@ -10,14 +10,11 @@ public class Pgm_body {
     }
     
     public void genC(PW pw){
-        if(decl != null){
-            System.out.println("[body]_decl -> decl");
+        if(decl != null)
             decl.genC(pw);
-        }
-        if(fdecl != null){
-            System.out.println("[body]_fdecl->Func_declarations");
+            
+        if(fdecl != null)
             fdecl.genC(pw);
 
-        }
     }
 }
