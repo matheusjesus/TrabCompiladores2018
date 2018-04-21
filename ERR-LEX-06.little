@@ -1,0 +1,21 @@
+PROGRAM p06
+BEGIN
+  --Na funcao imprimirXvezes no terceiro parametro do IF a designacao esta errada (espero := porem tem ++)
+  FUNCTION VOID imprimirXvezes ( INT num ) BEGIN
+    INT i;    
+    FOR(i := 0; i < num; i ++)
+        WRITE(num);
+    ENDFOR
+  END
+
+  FUNCTION VOID main ( ) BEGIN
+    STRING inicio := "Insira um numero: ";
+    INT num;
+   
+    WRITE ( comeco );
+    READ ( num );
+
+    imprimirXvezes( num );
+  END
+
+END
