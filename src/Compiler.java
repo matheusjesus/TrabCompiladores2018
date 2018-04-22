@@ -115,7 +115,7 @@ public class Compiler {
             strnovo = str();
 
             if(lexer.token != Symbol.SEMICOLON){
-                error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber() + " ou anterior a ela.");
+                error.signal("Um ponto e virgula era esperado antes da linha " + lexer.getLineNumber());
             }
             lexer.nextToken();
         }
@@ -159,7 +159,7 @@ public class Compiler {
             strnovo = str();
 
             if(lexer.token != Symbol.SEMICOLON){
-                error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber() + " ou anterior a ela.");
+                error.signal("Um ponto e virgula era esperado antes da linha " + lexer.getLineNumber());
             }
             lexer.nextToken();
             
@@ -198,7 +198,7 @@ public class Compiler {
             idlist = id_list();
 
             if(lexer.token != Symbol.SEMICOLON){
-                error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber() + " ou anterior a ela.");
+                error.signal("Um ponto e virgula era esperado antes da linha " + lexer.getLineNumber());
             }
             lexer.nextToken();
             for(Id i : idlist){
@@ -399,7 +399,7 @@ public class Compiler {
             corpo = func_body();
 
             if(lexer.token != Symbol.END){
-                error.signal("A funcao deve terminar com END! Linha " + lexer.getLineNumber());
+                error.signal("Esperado uma declaracao END na linha " + lexer.getLineNumber());
             }
             lexer.nextToken(); 
             
@@ -516,7 +516,7 @@ public class Compiler {
             if(symaux == Symbol.LPAR){
                 callexpr = call_expr();
                 if(lexer.token != Symbol.SEMICOLON){
-                    error.signal("Um ponto e virgula era esperado na linha " + lexer.getLineNumber() + " ou anterior a ela.");
+                    error.signal("Um ponto e virgula era esperado antes da linha " + lexer.getLineNumber());
                 }
                 lexer.nextToken();
             }
@@ -552,7 +552,7 @@ public class Compiler {
         assexpr = assign_expr();
         
         if(lexer.token != Symbol.SEMICOLON){
-            error.signal("Esperado um ponto e virgula na linha " + lexer.getLineNumber() + " ou anterior a ela.");
+            error.signal("Um ponto e virgula era esperado antes da linha " + lexer.getLineNumber());
         }
         lexer.nextToken();
         
@@ -1035,7 +1035,7 @@ public class Compiler {
         
         
         if(lexer.token != Symbol.ENDFOR){
-            error.signal("Uma declaracao ENDIF era esperada na linha " + lexer.getLineNumber());
+            error.signal("Uma declaracao ENDFOR era esperada na linha " + lexer.getLineNumber());
         }
         lexer.nextToken();
         
