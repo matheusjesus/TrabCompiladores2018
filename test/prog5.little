@@ -1,4 +1,4 @@
-PROGRAM p04
+PROGRAM p05
 BEGIN
   --funcao fibonacci
   FUNCTION VOID fib ( INT num ) BEGIN
@@ -10,7 +10,7 @@ BEGIN
     WRITE(b);
     WRITE(coma);
 
-    FOR(i:= 0 ; i < num ; i := i + 1)
+
        aux := a + b;
        a := b;
        b := aux;
@@ -23,8 +23,6 @@ BEGIN
        IF (i < num - 1) THEN
          WRITE(coma);
        ENDIF
-
-    ENDFOR
   END
 
   --funcao main

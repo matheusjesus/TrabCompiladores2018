@@ -1,0 +1,15 @@
+PROGRAM p07
+BEGIN
+  FUNCTION VOID main ( ) BEGIN
+    --Neste codigo, o IF falta argumentos
+    INT a, b;
+    READ ( a, b );
+
+    IF () THEN
+        a:= b;
+    ENDIF
+
+    WRITE ( a );
+
+  END
+END
