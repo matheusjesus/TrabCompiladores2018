@@ -20,4 +20,16 @@ public class Factor_tail {
         else
             call.genC(pw, false);        
     }
+    
+    public Primary getPrimary(){
+        return this.primary;
+    }
+    
+    public Call_expr getCall(){
+        return this.call;
+    }
+    
+    public Symbol getMulop(){
+        return this.mulop;
+    }
 }

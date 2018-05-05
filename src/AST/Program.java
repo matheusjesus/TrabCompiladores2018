@@ -11,6 +11,7 @@ public class Program {
     
     public void genC(PW pw){
         pw.println("#include <stdio.h>", true);
+        pw.println("#include <stdlib.h>", true);
         pw.println("#include <string.h>\n", true);
         if(body != null)
             body.genC(pw);

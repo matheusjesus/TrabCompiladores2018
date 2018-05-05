@@ -1,15 +1,16 @@
 PROGRAM teste
 BEGIN
-
 	FUNCTION VOID main () BEGIN
-		INT num;
+		INT a, b, c, d, e, f;
 		
-		num := 0;
+		a := (a+b) * b / 2 + (4 - 6 * 5);
+		a := a / fib();
+		a := fib() / a;
+		e := fib() * e + c / (a + (5 /d - (e / e * a * b + (c * 9)))) / fib();
 		
-		fib( num );
 	END
 	
-	FUNCTION VOID fib ( INT num) BEGIN
-		num := num + 1;
+	FUNCTION VOID fib () BEGIN
+	
 	END
 END

@@ -3,28 +3,45 @@ package AST;
 import java.util.ArrayList;
 
 public class Expr {
-    private final Factor factor;
-    private final ArrayList<Expr_tail> tail;
+    private Expr_conteudo conteudo;
+    private Expr expresq, exprdir;
+    private boolean parenteses;
     
-    public Expr(Factor factor){
-        this.factor = factor;
-        this.tail = null;
+    public Expr(Expr_conteudo conteudo, Expr expresq, Expr exprdir){
+        this.conteudo = conteudo;
+        this.expresq = expresq;
+        this.exprdir = exprdir;
+        this.parenteses = false;
     }
     
-    public Expr(Factor factor, ArrayList<Expr_tail> tail){
-        this.factor= factor;
-        this.tail = tail;
+    public Expr(Expr_conteudo conteudo){
+        this.conteudo = conteudo;
+        this.expresq = null;
+        this.exprdir = null;
+        this.parenteses = false;
     }
-    
+
+ 
     public void genC(PW pw){
-        //se o tail == null -> nao chamar o genc do tail, apenas do factor
-        if(factor != null)
-            factor.genC(pw);
-        if(tail != null){
-            for(Expr_tail f : tail){
-                f.genC(pw);
-            }                
+        if(parenteses){
+            pw.print("(", false);
         }
-            
+        
+        if(expresq != null && exprdir != null){
+            expresq.genC(pw);
+            conteudo.genC(pw);
+            exprdir.genC(pw);
+        }
+        else{
+            conteudo.genC(pw);
+        }
+        
+        if(parenteses){
+            pw.print(")", false);
+        }
+    }
+    
+    public void setPar(boolean par){
+        this.parenteses = par;
     }
 }

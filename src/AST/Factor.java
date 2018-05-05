@@ -24,4 +24,16 @@ public class Factor {
                 f.genC(pw);
         }
     }
+    
+    public Primary getPrimary(){
+        return this.primary;
+    }
+    
+    public ArrayList<Factor_tail> getTail(){
+        return this.tail;
+    }
+    
+    public Call_expr getCall(){
+        return this.call;
+    }
 }

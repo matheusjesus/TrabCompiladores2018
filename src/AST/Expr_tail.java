@@ -15,4 +15,12 @@ public class Expr_tail {
         pw.print(" "+addop.toString()+" ", false);
         factor.genC(pw);        
     }
+    
+    public Symbol getAddop(){
+        return this.addop;
+    }
+    
+    public Factor getFactor(){
+        return this.factor;
+    }
 }

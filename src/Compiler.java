@@ -659,13 +659,151 @@ public class Compiler {
     public Expr expr(){
         Factor fact;
         ArrayList<Expr_tail> tail;
+        Expr expresq = null, exprdir = null, fexpr;
+        Expr_conteudo cont = null;
         
-        
-        fact = factor();
-        
+        fact = factor();        
         tail = expr_tail();
         
-        return new Expr(fact, tail); 
+        fexpr = fact_expr(fact);
+        
+        if(!tail.isEmpty()){    //tem exprtail
+            expresq = fexpr;
+            
+            cont = new Expr_conteudo(tail.get(0).getAddop());
+            exprdir = add_expr(tail);
+            return new Expr(cont, expresq, exprdir);
+        }
+        else{
+            return fexpr;
+        }
+    }
+    
+    public Expr fact_expr(Factor fact){
+        int tipoprim;
+        boolean factail = true;
+        Expr expresq = null, exprdir = null;
+        Expr_conteudo cont = null;
+        
+        if(fact.getTail().isEmpty()){
+            factail = false;
+        }
+        
+        if(fact.getCall() != null){ //se for call_expr
+            cont = new Expr_conteudo(fact.getCall());
+            if(factail){
+                expresq = new Expr(cont);
+            }
+        }
+        else{   //se for primary
+            tipoprim = fact.getPrimary().getTipo();
+
+            switch (tipoprim){
+                case 1: //expr  //possivel problema!!!!??
+                    expresq = fact.getPrimary().getExpr();
+                    expresq.setPar(true);
+
+                    if(!factail){
+                        return expresq;
+                    }
+                    break;
+                case 2: //id
+                    cont = new Expr_conteudo(fact.getPrimary().getId());
+                    expresq = new Expr(cont);
+                    break;
+                case 3: //int
+                    cont = new Expr_conteudo(fact.getPrimary().getInt());
+                    expresq = new Expr(cont);
+                    break;
+                case 4: //float
+                    cont = new Expr_conteudo(fact.getPrimary().getFloat());
+                    expresq = new Expr(cont);
+                    break;
+            }
+        }
+        
+        if(factail){ //eh mulop e outra expr
+            cont = new Expr_conteudo(fact.getTail().get(0).getMulop());
+            exprdir = mult_expr(fact.getTail());
+            return new Expr(cont, expresq, exprdir);
+        }
+        
+        return new Expr(cont, null, null);
+    }
+    
+    //funcao para montar as Expr do factor tail:
+    public Expr mult_expr(ArrayList<Factor_tail> tail){
+        int tipoprim;
+        Factor_tail ftail;
+        Expr expresq = null, exprdir = null;
+        Expr_conteudo cont = null;
+        
+        ftail = tail.get(0);
+        
+        if(ftail.getCall() != null){    //eh call_expr
+            cont = new Expr_conteudo(ftail.getCall());
+            if(tail.size() == 1){
+                expresq = new Expr(cont);
+            }
+        }
+        else{   //eh primary
+            tipoprim = ftail.getPrimary().getTipo();
+
+            switch (tipoprim){
+                case 1: //expr  //problema??!!
+                    expresq = ftail.getPrimary().getExpr();
+                    expresq.setPar(true);
+                    
+                    if(tail.size() == 1){
+                        return expresq;
+                    }
+                    break;
+                case 2: //id
+                    cont = new Expr_conteudo(ftail.getPrimary().getId());
+                    expresq = new Expr(cont);
+                    break;
+                case 3: //int
+                    cont = new Expr_conteudo(ftail.getPrimary().getInt());
+                    expresq = new Expr(cont);
+                    break;
+                case 4: //float
+                    cont = new Expr_conteudo(ftail.getPrimary().getFloat());
+                    expresq = new Expr(cont);
+                    break;
+            }
+        }
+        
+        if(tail.size() == 1){ //eh o ultimo da lista
+            return new Expr(cont, null, null);
+        }
+        else{
+            cont = new Expr_conteudo(tail.get(1).getMulop());
+            tail.remove(0);
+            exprdir = mult_expr(tail);
+        }
+        
+        return new Expr(cont, expresq, exprdir); 
+    }
+    
+    //funcao para montar as Expr do expr_tail:
+    public Expr add_expr(ArrayList<Expr_tail> tail){
+        Expr_conteudo cont;
+        Expr exprdir, expresq, fexpr;
+        
+        fexpr = fact_expr(tail.get(0).getFactor());
+        
+        if(tail.size() != 1){ //nao eh o ultimo
+            expresq = fexpr;
+            
+            cont = new Expr_conteudo(tail.get(1).getAddop());
+            tail.remove(0);
+            exprdir = add_expr(tail);
+            
+            return new Expr(cont, expresq, exprdir);
+        }
+        else{
+            return fexpr;
+        }
     }
     
     //expr_tail -> addop factor expr_tail | empty

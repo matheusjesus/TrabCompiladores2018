@@ -50,5 +50,25 @@ public class Primary {
                 pw.print(""+flutuante, false);
                 break;
         }
-    } 
+    }
+    
+    public int getTipo(){
+        return this.tipo;
+    }
+    
+    public Expr getExpr(){
+        return this.expr;
+    }
+    
+    public Id getId(){
+        return this.id;
+    }
+    
+    public int getInt(){
+        return this.inteiro;
+    }
+    
+    public float getFloat(){
+        return this.flutuante;
+    }
 }

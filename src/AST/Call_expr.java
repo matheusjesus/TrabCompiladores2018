@@ -33,5 +33,11 @@ public class Call_expr{
             pw.print(")", false);
     }
 
-    
+    public Id getId() {
+        return id;
+    }
+
+    public ArrayList<Expr> getList(){
+        return this.expr_list;
+    }
 }
