@@ -886,27 +886,7 @@ public class Compiler {
         
         return tail;
     }
-    
-/*    //postfix_expr -> primary | call_expr
-    public void postfix_expr(){
-        Symbol auxsym;
-        
-        if(lexer.token == Symbol.IDENT){
-        
-            auxsym = lexer.checkNextToken();
-        
-            if(auxsym == Symbol.LPAR){
-                call_expr();
-            }
-            else{
-                primary();
-            }
-        }
-        else{
-            primary();
-        }
-    }
-*/
+
     //call_expr -> id ( {expr_list} )
     public Call_expr call_expr(){
         Id id;

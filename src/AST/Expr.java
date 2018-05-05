@@ -1,7 +1,5 @@
 package AST;
 
-import java.util.ArrayList;
-
 public class Expr {
     private Expr_conteudo conteudo;
     private Expr expresq, exprdir;
