@@ -2,7 +2,7 @@ package AST;
 
 import Lexer.Symbol;
 
-public class If_stmt{
+public class If_stmt extends Stmt{
     private Cond cond;
     private Stmt_list stmt_list;
     private Else_part else_part;
@@ -14,7 +14,8 @@ public class If_stmt{
     }
     //if_stmt -> IF ( cond ) THEN stmt_list else_part ENDIF
 
-    public void genC(PW pw) {
+    @Override
+    public void genC(PW pw, boolean ident) {
         pw.print("if (", true);
         cond.genC(pw);
         pw.println(") {", false);

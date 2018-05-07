@@ -475,71 +475,56 @@ public class Compiler {
     //stmt_list -> stmt stmt_tail | empty
     public Stmt_list stmt_list(){
         ArrayList<Stmt> stmtlist = new ArrayList();
-        Stmt novo;
         
         if(lexer.token == Symbol.IDENT || lexer.token == Symbol.READ || lexer.token == Symbol.WRITE || lexer.token == Symbol.RETURN || lexer.token == Symbol.IF || lexer.token == Symbol.FOR){
-            novo = stmt();
+            stmt(stmtlist);
             
-            stmtlist.add(novo);
-            
-            stmtlist = stmt_tail(stmtlist);
+            stmt_tail(stmtlist);
         }
         
         return new Stmt_list(stmtlist);
     }
     
     //stmt_tail -> stmt stmt_tail | empty
-    public ArrayList<Stmt> stmt_tail(ArrayList<Stmt> stmtlist){
-        Stmt novo;
+    public void stmt_tail(ArrayList<Stmt> stmtlist){
         while(lexer.token == Symbol.IDENT || lexer.token == Symbol.READ || lexer.token == Symbol.WRITE || lexer.token == Symbol.RETURN || lexer.token == Symbol.IF || lexer.token == Symbol.FOR){
-            novo = stmt();
-            stmtlist.add(novo);
+            stmt(stmtlist);
         }
-        
-        return stmtlist;
     }
     
     //stmt -> assign_stmt | read_stmt | write_stmt | return_stmt | if_stmt | for_stmt
-    public Stmt stmt(){
+    public void stmt(ArrayList<Stmt> stmtlist){
         Symbol symaux;
-        Call_expr callexpr = null;
-        Assign_expr assign = null;
-        Read_stmt read = null;
-        Write_stmt write = null;
-        Return_stmt return_stmt = null;
-        If_stmt if_stmt = null;
-        For_stmt for_stmt = null;
         
         if(lexer.token == Symbol.IDENT){
             symaux = lexer.checkNextToken();
             
             if(symaux == Symbol.LPAR){
-                callexpr = call_expr();
+                stmtlist.add(call_expr());
                 if(lexer.token != Symbol.SEMICOLON){
                     error.signal("Um ponto e virgula era esperado antes da linha " + lexer.getLineNumber());
                 }
                 lexer.nextToken();
+                                
             }
             else{
-                assign = assign_stmt();
+                stmtlist.add(assign_stmt());
             }            
         }else if (lexer.token == Symbol.READ){
-            read = read_stmt();
+            stmtlist.add(read_stmt());
             
         }else if(lexer.token == Symbol.WRITE){
-            write = write_stmt();
+            stmtlist.add(write_stmt());
             
         }else if(lexer.token == Symbol.RETURN){
-            return_stmt = return_stmt();
+            stmtlist.add(return_stmt());
             
         }else if(lexer.token == Symbol.IF){
-            if_stmt = if_stmt();
+            stmtlist.add(if_stmt());
             
         }else if(lexer.token == Symbol.FOR){
-            for_stmt = for_stmt();
+            stmtlist.add(for_stmt());
         }
-        
-        return new Stmt(callexpr, assign, read, write, return_stmt, if_stmt, for_stmt);
     }
     
     

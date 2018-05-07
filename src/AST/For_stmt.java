@@ -1,6 +1,6 @@
 package AST;
 
-public class For_stmt{
+public class For_stmt extends Stmt{
     private Assign_expr assign1;
     private Cond cond;
     private Assign_expr assign2;
@@ -13,7 +13,8 @@ public class For_stmt{
         this.stmt_list = stmt_list;
     }
 
-    public void genC(PW pw) {
+    @Override
+    public void genC(PW pw, boolean ident) {
         pw.print("for( ", true);
         if (assign1 != null)
             assign1.genC(pw, false);

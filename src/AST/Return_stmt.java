@@ -1,6 +1,6 @@
 package AST;
 
-public class Return_stmt{
+public class Return_stmt extends Stmt{
     private final Expr expr;
     
     public Return_stmt(Expr expr){
@@ -9,7 +9,8 @@ public class Return_stmt{
     
     //return_stmt -> RETURN expr;
     
-    public void genC(PW pw) {
+    @Override
+    public void genC(PW pw, boolean ident) {
         pw.print("return ", true);
         expr.genC(pw);
         pw.println(" ;", false);

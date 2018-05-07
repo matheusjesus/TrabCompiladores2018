@@ -48,7 +48,8 @@ public class Var_decl_list {
                 floatlist.get(i).genC(pw);
             }
             
-            pw.println(";\n", false);
+            pw.println(";", false);
         }
+        pw.println("", false);
     }
 }
