@@ -41,6 +41,19 @@ public class Expr_conteudo {
         tipo = 6;
     }
     
+    public Symbol getTipo(){
+        switch(tipo){
+            case 1:
+                return Symbol.IDENT;
+            case 3:
+                return Symbol.INT;
+            case 4:
+                return Symbol.FLOAT;
+        }
+        
+        return null;
+    }
+    
     public void genC(PW pw){
         switch (tipo){
             case 1:

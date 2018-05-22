@@ -62,24 +62,26 @@ public class Compiler {
 
     //pgm_body -> decl func_declarations
     public Pgm_body pgm_body(){
-        Decl decl = decl();
+        Decl decl = decl(true);
+        
         Func_declarations fdecl = func_declarations();
         
         return new Pgm_body(decl, fdecl);
     }
     
     //decl -> string_decl_list {decl} | var_decl_list {decl} | empty
-    public Decl decl(){
+    //global == 0 para variavel local . global == 1 variavel global
+    public Decl decl(boolean global){
         String_decl_list strlist = null;
         Var_decl_list varlist = null;
         do{
             //decl();
             if(lexer.token == Symbol.STRING){
-                strlist = string_decl_list();
+                strlist = string_decl_list(global);
             }
         
             if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT){
-                varlist = var_decl_list();
+                varlist = var_decl_list(global);
             }
         } while(lexer.token == Symbol.STRING || lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT);
 
@@ -91,19 +93,19 @@ public class Compiler {
 /******************** GLOBAL STRING DECLARATION ********************/
     
     //string_decl_list -> string_decl {string_decl_tail}
-    public String_decl_list string_decl_list(){
+    public String_decl_list string_decl_list(boolean global){
         ArrayList<VariableStr> strlist;
-        strlist = string_decl();
+        strlist = string_decl(global);
         
         if(lexer.token == Symbol.STRING){
-            strlist = string_decl_tail(strlist);
+            strlist = string_decl_tail(strlist, global);
         }
         
         return new String_decl_list(strlist);
     }
     
     //string_decl -> STRING id := str ; | empty
-    public ArrayList<VariableStr> string_decl(){
+    public ArrayList<VariableStr> string_decl(boolean global){
         ArrayList<VariableStr> strlist = new ArrayList();
         VariableStr novo;
         Id idnovo = null;
@@ -113,7 +115,7 @@ public class Compiler {
             lexer.nextToken();
 
             idnovo = id();
-
+           
             if(lexer.token != Symbol.ASSIGN){
                 error.signal("Um sinal de atribuicao era esperado na linha " + lexer.getLineNumber());
             }
@@ -126,7 +128,20 @@ public class Compiler {
             }
             lexer.nextToken();
         }
+        
         novo = new VariableStr(idnovo.getId(), strnovo);
+
+        if(global){ 
+            if(symtable.getInGlobal(idnovo.getId()) != null)
+                error.signal("Variavel ja declarada. Linha "+lexer.getCurrentLine());
+            
+            symtable.putInGlobal(idnovo.getId(), novo);
+        } else {
+            if(symtable.getInLocal(idnovo.getId()) != null)
+                error.signal("Variavel ja declarada. Linha " + lexer.getCurrentLine());
+          
+            symtable.putInLocal(idnovo.getId(), novo);
+        }
         strlist.add(novo);
         
         return strlist;
@@ -148,7 +163,7 @@ public class Compiler {
     }
     
     //string_decl_tail -> string_decl {string_decl_tail}
-    public ArrayList<VariableStr> string_decl_tail(ArrayList<VariableStr> strlist){
+    public ArrayList<VariableStr> string_decl_tail(ArrayList<VariableStr> strlist, boolean global){
         VariableStr novo;
         Id idnovo;
         String strnovo;
@@ -171,7 +186,19 @@ public class Compiler {
             lexer.nextToken();
             
             novo = new VariableStr(idnovo.getId(), strnovo);
-            strlist.add(novo);
+            
+            if(global){ 
+                if(symtable.getInGlobal(idnovo.getId()) != null)
+                    error.signal("Variavel ja declarada. Linha "+lexer.getCurrentLine());
+
+                symtable.putInGlobal(idnovo.getId(), novo);
+            } else {
+                if(symtable.getInLocal(idnovo.getId()) != null)
+                    error.signal("Variavel ja declarada. Linha " + lexer.getCurrentLine());
+
+                symtable.putInLocal(idnovo.getId(), novo);
+            }
+                strlist.add(novo);
         }
         
         return strlist;
@@ -181,19 +208,19 @@ public class Compiler {
 /******************** VARIABLE DECLARATION ********************/    
     
     //var_decl_list -> var_decl {var_decl_tail}
-    public Var_decl_list var_decl_list(){
+    public Var_decl_list var_decl_list(boolean global){
         ArrayList<Var_type> lv;
         Var_decl_list varlist;
         
-        lv = var_decl();
-        lv = var_decl_tail(lv);
+        lv = var_decl(global);
+        lv = var_decl_tail(lv, global);
         
         varlist = new Var_decl_list(lv);
         return varlist;
     }
     
     //var_decl -> var_type id_list ; | empty
-    public ArrayList<Var_type> var_decl(){
+    public ArrayList<Var_type> var_decl(boolean global){
         Symbol tipo;
         ArrayList<Id> idlist;
         ArrayList<Var_type> lv = new ArrayList();
@@ -208,8 +235,23 @@ public class Compiler {
                 error.signal("Um ponto e virgula era esperado antes da linha " + lexer.getLineNumber());
             }
             lexer.nextToken();
+            
             for(Id i : idlist){
                 v = new Var_type(i.getId(), tipo);
+                
+                //analisador lexico
+                if(global){ 
+                    if(symtable.getInGlobal(i.getId()) != null)
+                        error.signal("Variavel ja declarada. Linha "+lexer.getCurrentLine());
+
+                    symtable.putInGlobal(i.getId(), v);
+                } else {
+                    if(symtable.getInLocal(i.getId()) != null)
+                        error.signal("Variavel ja declarada. Linha " + lexer.getCurrentLine());
+
+                    symtable.putInLocal(i.getId(), v);
+                }
+               
                 lv.add(v);
             }
         }
@@ -282,13 +324,24 @@ public class Compiler {
     }
     
     //var_decl_tail -> var_decl {var_decl_tail}
-    public ArrayList<Var_type> var_decl_tail(ArrayList<Var_type> lv){
+    public ArrayList<Var_type> var_decl_tail(ArrayList<Var_type> lv, boolean global){
         ArrayList<Var_type> lvaux;
         //int i;
         
         while(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT){
-            lvaux = var_decl();
+            lvaux = var_decl(global);
             for(Var_type v : lvaux){
+                if(global){ 
+                    if(symtable.getInGlobal(v.getNome()) != null)
+                        error.signal("Variavel ja declarada. Linha "+lexer.getCurrentLine());
+
+                    symtable.putInGlobal(v.getNome(), v);
+                } else {
+                    if(symtable.getInLocal(v.getNome()) != null)
+                        error.signal("Variavel ja declarada. Linha " + lexer.getCurrentLine());
+
+                    symtable.putInLocal(v.getNome(), v);
+                }
                 lv.add(v);
             }
             
@@ -389,6 +442,7 @@ public class Compiler {
         Symbol tipo;
         Param_decl_list paramlist = null;
         Func_body corpo;
+        Func_aux func_aux;
         
         if(lexer.token == Symbol.FUNCTION){
             lexer.nextToken();
@@ -400,8 +454,6 @@ public class Compiler {
             if(symtable.get(id.getId()) != null){
                 error.signal("Funcao ja declarada! Linha " + lexer.getLineNumber());
             }
-            
-            symtable.putInGlobal(id.getId(), tipo);
             
             //se for main, verifica se nao tem parametro
             if(id.getId().compareTo("main") == 0){
@@ -444,6 +496,10 @@ public class Compiler {
             }
             lexer.nextToken(); 
             
+            func_aux = new Func_aux(tipo, paramlist);
+            
+            symtable.putInGlobal(id.getId(), func_aux);
+
             //limpar tabela de variaveis locais
             symtable.removeLocalIdent();
             
@@ -462,6 +518,7 @@ public class Compiler {
         Symbol tipo;
         Param_decl_list paramlist = null;
         Func_body corpo;
+        Func_aux func_aux;
         
         while(lexer.token == Symbol.FUNCTION){
             lexer.nextToken();
@@ -473,9 +530,7 @@ public class Compiler {
             if(symtable.get(id.getId()) != null){
                 error.signal("Funcao ja declarada! Linha " + lexer.getLineNumber());
             }
-            
-            symtable.putInGlobal(id.getId(), tipo);
-            
+                        
             //se for main, verifica se nao tem parametro
             if(id.getId().compareTo("main") == 0){
                 if(lexer.token != Symbol.LPAR){
@@ -516,7 +571,11 @@ public class Compiler {
                 error.signal("A funcao deve terminar com END! Linha " + lexer.getLineNumber());
             }
             lexer.nextToken(); 
+
+            func_aux = new Func_aux(tipo, paramlist);
             
+            symtable.putInGlobal(id.getId(), func_aux);
+
             //limpar tabela de variaveis locais
             symtable.removeLocalIdent();
             
@@ -533,7 +592,7 @@ public class Compiler {
         Decl decl;
         Stmt_list stmt_list;
         
-        decl = decl();
+        decl = decl(false);
         stmt_list = stmt_list();
         
         return new Func_body(decl, stmt_list);
@@ -570,12 +629,7 @@ public class Compiler {
             symaux = lexer.checkNextToken();
             
             if(symaux == Symbol.LPAR){
-                stmtlist.add(call_expr());
-                if(lexer.token != Symbol.SEMICOLON){
-                    error.signal("Um ponto e virgula era esperado antes da linha " + lexer.getLineNumber());
-                }
-                lexer.nextToken();
-                                
+                stmtlist.add(call_stmt());                     
             }
             else{
                 stmtlist.add(assign_stmt());
@@ -597,7 +651,16 @@ public class Compiler {
         }
     }
     
-    
+    public Call_expr call_stmt(){
+        Call_expr call_expr = call_expr();
+        
+        if(lexer.token != Symbol.SEMICOLON){
+            error.signal("Um ponto e virgula era esperado antes da linha " + lexer.getLineNumber());
+        }
+        lexer.nextToken();
+        
+        return call_expr;
+    }
 /******************** BASIC STATEMENTS ********************/ 
     
     //assign_stmt -> assign_expr ;
@@ -946,6 +1009,8 @@ public class Compiler {
     public Call_expr call_expr(){
         Id id;
         ArrayList<Expr> exprlist = null;
+        Func_aux funcaux;
+        Param_decl_list params;
         
         id = id();
         
@@ -963,6 +1028,27 @@ public class Compiler {
             error.signal("As expressoes devem estar entre parenteses! Linha " + lexer.getLineNumber());
         }
         lexer.nextToken();
+        
+        funcaux = (Func_aux) symtable.getInGlobal(id.getId());
+        if(funcaux == null){
+            error.signal("Funcao chamada nao declarada! Linha " + lexer.getLineNumber());
+        }
+        
+        params = funcaux.getParam();
+        
+        //verificar se o tamanho dos parametros eh o mesmo
+        if(exprlist.size() != params.getParlist().size()){
+            error.signal("Tamanho dos parametros diferentes. Linha "+lexer.getCurrentLine());
+        }
+        
+        //verificar se o tipo dos parametros eh o mesmo
+        for(int i = 0; i < params.getParlist().size(); i++){
+            if(params.getParlist().get(i).getTipo() != exprlist.get(i).getTipo()){
+                error.signal("Tipo dos parametros diferentes. Linha "+lexer.getCurrentLine());
+            }
+        }
+        
+        
         
         return new Call_expr(id, exprlist);
     }

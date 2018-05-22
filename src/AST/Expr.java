@@ -1,8 +1,11 @@
 package AST;
 
+import Lexer.Symbol;
+
 public class Expr {
     private Expr_conteudo conteudo;
     private Expr expresq, exprdir;
+    private Symbol tipo;
     private boolean parenteses;
     
     public Expr(Expr_conteudo conteudo, Expr expresq, Expr exprdir){
@@ -18,7 +21,22 @@ public class Expr {
         this.exprdir = null;
         this.parenteses = false;
     }
-
+    
+    public Symbol getTipo(){
+        Symbol tipoesq = null, tipodir = null;
+        if(expresq != null){
+            tipoesq = expresq.getTipo();
+            tipodir = expresq.getTipo();
+        }
+        
+        
+        
+        if(tipoesq == Symbol.FLOAT || tipodir == Symbol.FLOAT){
+            this.tipo = Symbol.FLOAT;
+        }
+        
+        return conteudo.getTipo();
+    }
  
     public void genC(PW pw){
         if(parenteses){

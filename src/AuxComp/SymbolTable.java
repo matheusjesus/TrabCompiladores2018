@@ -39,5 +39,13 @@ public class SymbolTable {
     
     public void removeLocalIdent(){
         localTable.clear();
-    }            
+    }
+    
+    public void substituirLocal(Object key, Object valor) {
+        this.localTable.replace(key, valor);
+    }
+    
+    public void substituirGlobal(Object key, Object valor) {
+        this.globalTable.replace(key, valor);
+    }
 }

@@ -10,6 +10,11 @@ public class Param_decl {
         this.tipo = tipo;
         this.nome = nome;
     }
+    
+    public Symbol getTipo(){
+        return this.tipo;
+    }
+    
     /*
     param_decl -> var_type id
     genC(): printar o tipo e o nome

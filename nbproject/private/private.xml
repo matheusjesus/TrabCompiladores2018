@@ -3,8 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/matheus/Dropbox/UFSCar/Perfil%207/Compiladores/Projeto%20Linguagem%20LITTLE/TrabCompiladores2018/src/Compiler.java</file>
-            <file>file:/home/matheus/Dropbox/UFSCar/Perfil%207/Compiladores/Projeto%20Linguagem%20LITTLE/TrabCompiladores2018/src/AST/Stmt_list.java</file>
+            <file>file:/home/carla/Área%20de%20Trabalho/TrabCompiladores2018/src/AST/Func_aux.java</file>
+            <file>file:/home/carla/Área%20de%20Trabalho/TrabCompiladores2018/src/AST/Expr_conteudo.java</file>
+            <file>file:/home/carla/Área%20de%20Trabalho/TrabCompiladores2018/src/AST/Param_decl_list.java</file>
+            <file>file:/home/carla/Área%20de%20Trabalho/TrabCompiladores2018/src/AST/Expr.java</file>
+            <file>file:/home/carla/Área%20de%20Trabalho/TrabCompiladores2018/src/Compiler.java</file>
+            <file>file:/home/carla/Área%20de%20Trabalho/TrabCompiladores2018/src/AST/Stmt.java</file>
+            <file>file:/home/carla/Área%20de%20Trabalho/TrabCompiladores2018/src/AST/Param_decl.java</file>
         </group>
     </open-files>
 </project-private>
