@@ -1,18 +1,28 @@
 package AST;
 
 import Lexer.Symbol;
+import java.util.ArrayList;
 
 public class Func_decl {
     Symbol tipo;
     String nome;
     Param_decl_list paramlist;
     Func_body corpo;
+    ArrayList<Var_type> varlist;
     
     public Func_decl(Symbol tipo, String nome, Param_decl_list paramlist, Func_body corpo){
         this.tipo = tipo;
         this.nome = nome;
         this.paramlist = paramlist;
         this.corpo = corpo;
+    }
+    
+    public String getName(){
+        return this.nome;
+    }
+    
+    public Symbol getTipo(){
+        return this.tipo;
     }
     
     public void genC(PW pw){

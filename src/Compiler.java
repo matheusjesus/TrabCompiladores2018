@@ -2,8 +2,12 @@ import Lexer.*;
 import Error.*;
 import AST.*;
 import java.util.*;
+import AuxComp.*;
 
 public class Compiler {
+    private Lexer lexer;
+    private CompilerError error;
+    private SymbolTable symtable;
 
     // para geracao de codigo
     public static final boolean GC = false; 
@@ -13,6 +17,9 @@ public class Compiler {
         lexer = new Lexer(p_input, error);
         error.setLexer(lexer);
         lexer.nextToken();
+        
+        symtable = new SymbolTable();
+        
         Program p = program();
         return p;
     }
@@ -314,12 +321,14 @@ public class Compiler {
         tipo = var_type();
         id = id();
 
+        symtable.putInLocal(id.getId(), tipo);
+        
         novo = new Param_decl(tipo, id.getId());
         parlist.add(novo);
         
         return parlist;
     }
-    
+   
     //param_decl_tail -> , param_decl param_decl_tail | empty
     public ArrayList<Param_decl> param_decl_tail(ArrayList<Param_decl> parlist){
         int comma = 0;
@@ -340,6 +349,11 @@ public class Compiler {
             tipo = var_type();
             id = id();
 
+            if(symtable.getInLocal(id.getId()) != null){
+                error.signal("Variavel ja declarada nesta funcao!" + lexer.getCurrentLine());
+            }
+            symtable.putInLocal(id.getId(), tipo);
+            
             novo = new Param_decl(tipo, id.getId());
             parlist.add(novo);
         }
@@ -360,6 +374,10 @@ public class Compiler {
             funcoes = func_decl_tail(funcoes);
         }
         
+        if(symtable.getInGlobal("main") == null){
+            error.signal("Funcao 'main' nao encontrada no programa.");
+        }
+        
         return new Func_declarations(funcoes);
     }
     
@@ -377,20 +395,43 @@ public class Compiler {
 
             tipo = any_type();
             id = id();
-            if(lexer.token != Symbol.LPAR){
-                error.signal("Os parametros da funcao devem estar entre parenteses! Linha " + lexer.getLineNumber());
+            
+            //fazemos verificacao do nome na tabela hash.
+            if(symtable.get(id.getId()) != null){
+                error.signal("Funcao ja declarada! Linha " + lexer.getLineNumber());
             }
-            lexer.nextToken();
+            
+            symtable.putInGlobal(id.getId(), tipo);
+            
+            //se for main, verifica se nao tem parametro
+            if(id.getId().compareTo("main") == 0){
+                if(lexer.token != Symbol.LPAR){
+                    error.signal("Espera-se '('! Linha " + lexer.getLineNumber());
+                }
+                lexer.nextToken();
 
-            if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT){
-                paramlist = param_decl_list();
+                if(lexer.token != Symbol.RPAR){
+                    error.signal("Funcao 'main' nao suporta parametros! Espera-se ')'. Linha " + lexer.getLineNumber());
+                }
+                lexer.nextToken();
             }
+            //nao é main
+            else {    
+                if(lexer.token != Symbol.LPAR){
+                    error.signal("Os parametros da funcao devem estar entre parenteses! Linha " + lexer.getLineNumber());
+                }
+                lexer.nextToken();
 
-            if(lexer.token != Symbol.RPAR){
-                error.signal("Os parametros da funcao devem estar entre parenteses! Linha " + lexer.getLineNumber());
+                if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT){
+                    paramlist = param_decl_list();
+                }
+
+                if(lexer.token != Symbol.RPAR){
+                    error.signal("Os parametros da funcao devem estar entre parenteses! Linha " + lexer.getLineNumber());
+                }
+                lexer.nextToken();
             }
-            lexer.nextToken();
-
+            
             if(lexer.token != Symbol.BEGIN){
                 error.signal("A funcao deve comecar com BEGIN! Linha " + lexer.getLineNumber());
             }
@@ -402,6 +443,9 @@ public class Compiler {
                 error.signal("Esperado uma declaracao END na linha " + lexer.getLineNumber());
             }
             lexer.nextToken(); 
+            
+            //limpar tabela de variaveis locais
+            symtable.removeLocalIdent();
             
             novo = new Func_decl(tipo, id.getId(), paramlist, corpo);
             
@@ -424,20 +468,43 @@ public class Compiler {
 
             tipo = any_type();
             id = id();
-            if(lexer.token != Symbol.LPAR){
-                error.signal("Os parametros da funcao devem estar entre parenteses! Linha " + lexer.getLineNumber());
+            
+            //fazemos verificacao do nome na tabela hash.
+            if(symtable.get(id.getId()) != null){
+                error.signal("Funcao ja declarada! Linha " + lexer.getLineNumber());
             }
-            lexer.nextToken();
+            
+            symtable.putInGlobal(id.getId(), tipo);
+            
+            //se for main, verifica se nao tem parametro
+            if(id.getId().compareTo("main") == 0){
+                if(lexer.token != Symbol.LPAR){
+                    error.signal("Espera-se '('! Linha " + lexer.getLineNumber());
+                }
+                lexer.nextToken();
 
-            if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT){
-                paramlist = param_decl_list();
+                if(lexer.token != Symbol.RPAR){
+                    error.signal("Funcao 'main' nao suporta parametros! Espera-se ')'. Linha " + lexer.getLineNumber());
+                }
+                lexer.nextToken();
             }
+            //nao é main
+            else {    
+                if(lexer.token != Symbol.LPAR){
+                    error.signal("Os parametros da funcao devem estar entre parenteses! Linha " + lexer.getLineNumber());
+                }
+                lexer.nextToken();
 
-            if(lexer.token != Symbol.RPAR){
-                error.signal("Os parametros da funcao devem estar entre parenteses! Linha " + lexer.getLineNumber());
+                if(lexer.token == Symbol.INT || lexer.token == Symbol.FLOAT){
+                    paramlist = param_decl_list();
+                }
+
+                if(lexer.token != Symbol.RPAR){
+                    error.signal("Os parametros da funcao devem estar entre parenteses! Linha " + lexer.getLineNumber());
+                }
+                lexer.nextToken();
             }
-            lexer.nextToken();
-
+            
             if(lexer.token != Symbol.BEGIN){
                 error.signal("A funcao deve comecar com BEGIN! Linha " + lexer.getLineNumber());
             }
@@ -449,6 +516,9 @@ public class Compiler {
                 error.signal("A funcao deve terminar com END! Linha " + lexer.getLineNumber());
             }
             lexer.nextToken(); 
+            
+            //limpar tabela de variaveis locais
+            symtable.removeLocalIdent();
             
             novo = new Func_decl(tipo, id.getId(), paramlist, corpo);
             
@@ -1144,7 +1214,4 @@ public class Compiler {
         
         return new For_stmt(assign1, cond, assign2, stmtlist);
     }
-    
-	private Lexer lexer;
-    private CompilerError error;
 }
