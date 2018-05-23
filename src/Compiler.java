@@ -135,12 +135,12 @@ public class Compiler {
             if(symtable.getInGlobal(idnovo.getId()) != null)
                 error.signal("Variavel ja declarada. Linha "+lexer.getCurrentLine());
             
-            symtable.putInGlobal(idnovo.getId(), novo);
+            symtable.putInGlobal(idnovo.getId(), Symbol.STRING);
         } else {
             if(symtable.getInLocal(idnovo.getId()) != null)
                 error.signal("Variavel ja declarada. Linha " + lexer.getCurrentLine());
           
-            symtable.putInLocal(idnovo.getId(), novo);
+            symtable.putInLocal(idnovo.getId(), Symbol.STRING);
         }
         strlist.add(novo);
         
@@ -191,12 +191,12 @@ public class Compiler {
                 if(symtable.getInGlobal(idnovo.getId()) != null)
                     error.signal("Variavel ja declarada. Linha "+lexer.getCurrentLine());
 
-                symtable.putInGlobal(idnovo.getId(), novo);
+                symtable.putInGlobal(idnovo.getId(), Symbol.STRING);
             } else {
                 if(symtable.getInLocal(idnovo.getId()) != null)
                     error.signal("Variavel ja declarada. Linha " + lexer.getCurrentLine());
 
-                symtable.putInLocal(idnovo.getId(), novo);
+                symtable.putInLocal(idnovo.getId(), Symbol.STRING);
             }
                 strlist.add(novo);
         }
@@ -242,14 +242,14 @@ public class Compiler {
                 //analisador lexico
                 if(global){ 
                     if(symtable.getInGlobal(i.getId()) != null)
-                        error.signal("Variavel ja declarada. Linha "+lexer.getCurrentLine());
+                        error.signal("Variavel "+i.getId()+" ja declarada.!");
 
-                    symtable.putInGlobal(i.getId(), v);
+                    symtable.putInGlobal(i.getId(), v.getTipo());
                 } else {
                     if(symtable.getInLocal(i.getId()) != null)
-                        error.signal("Variavel ja declarada. Linha " + lexer.getCurrentLine());
+                        error.signal("Variavel "+ i.getId() +" ja declarada!");
 
-                    symtable.putInLocal(i.getId(), v);
+                    symtable.putInLocal(i.getId(), v.getTipo());
                 }
                
                 lv.add(v);
@@ -326,22 +326,12 @@ public class Compiler {
     //var_decl_tail -> var_decl {var_decl_tail}
     public ArrayList<Var_type> var_decl_tail(ArrayList<Var_type> lv, boolean global){
         ArrayList<Var_type> lvaux;
+        Symbol s;
         //int i;
         
         while(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT){
-            lvaux = var_decl(global);
+            lvaux = var_decl(true);
             for(Var_type v : lvaux){
-                if(global){ 
-                    if(symtable.getInGlobal(v.getNome()) != null)
-                        error.signal("Variavel ja declarada. Linha "+lexer.getCurrentLine());
-
-                    symtable.putInGlobal(v.getNome(), v);
-                } else {
-                    if(symtable.getInLocal(v.getNome()) != null)
-                        error.signal("Variavel ja declarada. Linha " + lexer.getCurrentLine());
-
-                    symtable.putInLocal(v.getNome(), v);
-                }
                 lv.add(v);
             }
             
@@ -1043,7 +1033,7 @@ public class Compiler {
         
         //verificar se o tipo dos parametros eh o mesmo
         for(int i = 0; i < params.getParlist().size(); i++){
-            if(params.getParlist().get(i).getTipo() != exprlist.get(i).getTipo()){
+            if(params.getParlist().get(i).getTipo() != exprlist.get(i).getTipo(symtable)){
                 error.signal("Tipo dos parametros diferentes. Linha "+lexer.getCurrentLine());
             }
         }

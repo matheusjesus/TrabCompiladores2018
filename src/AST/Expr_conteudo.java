@@ -4,12 +4,12 @@ import Lexer.Symbol;
 
 public class Expr_conteudo {
     int tipo;
-    Id id;
-    Var_type var;
+    Id id = null;
+    Var_type var = null;
     int numint;
     float numfloat;
-    Symbol operador;
-    Call_expr call;
+    Symbol operador = null;
+    Call_expr call = null;
     
     public Expr_conteudo(Id id){
         this.id = id;
@@ -52,6 +52,14 @@ public class Expr_conteudo {
         }
         
         return null;
+    }
+    
+    public Call_expr call(){
+        return call;
+    }
+    
+    public String getId(){
+        return this.id.getId();
     }
     
     public void genC(PW pw){
