@@ -57,8 +57,8 @@ public class Expr {
             
             this.tipo = funcaux.getTipo();
         }
-        else if(tipoconteudo == Symbol.INT){
-            this.tipo = tipoconteudo;
+        else{
+            this.tipo = Symbol.INT;
         }
         
         return this.tipo;

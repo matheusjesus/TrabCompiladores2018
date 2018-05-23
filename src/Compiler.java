@@ -409,12 +409,17 @@ public class Compiler {
 
     //func_declarations -> func_decl {func_decl_tail}
     public Func_declarations func_declarations(){
-        ArrayList<Func_decl> funcoes = null;
+        ArrayList<Func_decl>         funcoes = new ArrayList();
+        boolean main;
         
-        funcoes = func_decl();
+        main = func_decl(funcoes);
+        
+        if(funcoes == null){
+            System.out.println("erroooo!");
+        }
         
         if(lexer.token == Symbol.FUNCTION){
-            funcoes = func_decl_tail(funcoes);
+            func_decl_tail(funcoes, main);
         }
         
         if(symtable.getInGlobal("main") == null){
@@ -425,15 +430,15 @@ public class Compiler {
     }
     
     //func_decl -> FUNCTION any_type id ({param_decl_list}) BEGIN func_body END | empty
-    public ArrayList<Func_decl> func_decl(){
-        ArrayList<Func_decl> funcoes = new ArrayList();
+    public boolean func_decl(ArrayList<Func_decl> funcoes){
         Func_decl novo;
         Id id;
         Symbol tipo;
         Param_decl_list paramlist = null;
         Func_body corpo;
         Func_aux func_aux;
-        
+        boolean main = false;
+                
         if(lexer.token == Symbol.FUNCTION){
             lexer.nextToken();
 
@@ -444,6 +449,7 @@ public class Compiler {
             if(symtable.get(id.getId()) != null){
                 error.signal("Funcao ja declarada! Linha " + lexer.getLineNumber());
             }
+            
             
             //se for main, verifica se nao tem parametro
             if(id.getId().compareTo("main") == 0){
@@ -456,6 +462,7 @@ public class Compiler {
                     error.signal("Funcao 'main' nao suporta parametros! Espera-se ')'. Linha " + lexer.getLineNumber());
                 }
                 lexer.nextToken();
+                main = true;
             }
             //nao é main
             else {    
@@ -474,6 +481,13 @@ public class Compiler {
                 lexer.nextToken();
             }
             
+            
+            //colocando funcaux na hash global
+            func_aux = new Func_aux(tipo, paramlist);
+            symtable.putInGlobal(id.getId(), func_aux);
+            
+            
+            //corpo
             if(lexer.token != Symbol.BEGIN){
                 error.signal("A funcao deve comecar com BEGIN! Linha " + lexer.getLineNumber());
             }
@@ -486,10 +500,7 @@ public class Compiler {
             }
             lexer.nextToken(); 
             
-            func_aux = new Func_aux(tipo, paramlist);
             
-            symtable.putInGlobal(id.getId(), func_aux);
-
             //limpar tabela de variaveis locais
             symtable.removeLocalIdent();
             
@@ -498,11 +509,11 @@ public class Compiler {
             funcoes.add(novo);
         }
         
-        return funcoes;
+        return main;
     }
     
     //func_decl_tail -> func_decl {func_decl_tail}
-    public ArrayList<Func_decl> func_decl_tail(ArrayList<Func_decl> funcoes){
+    public void func_decl_tail(ArrayList<Func_decl> funcoes, boolean main){
         Func_decl novo;
         Id id;
         Symbol tipo;
@@ -511,6 +522,11 @@ public class Compiler {
         Func_aux func_aux;
         
         while(lexer.token == Symbol.FUNCTION){
+            
+            if(main){
+                error.signal("A funcao main deve ser a ultima funcao descrita!");
+            }
+            
             lexer.nextToken();
 
             tipo = any_type();
@@ -520,7 +536,8 @@ public class Compiler {
             if(symtable.get(id.getId()) != null){
                 error.signal("Funcao ja declarada! Linha " + lexer.getLineNumber());
             }
-                        
+                     
+            
             //se for main, verifica se nao tem parametro
             if(id.getId().compareTo("main") == 0){
                 if(lexer.token != Symbol.LPAR){
@@ -532,6 +549,7 @@ public class Compiler {
                     error.signal("Funcao 'main' nao suporta parametros! Espera-se ')'. Linha " + lexer.getLineNumber());
                 }
                 lexer.nextToken();
+                main = true;
             }
             //nao é main
             else {    
@@ -550,6 +568,13 @@ public class Compiler {
                 lexer.nextToken();
             }
             
+            
+            //colocando funcaux na hash global
+            func_aux = new Func_aux(tipo, paramlist);
+            symtable.putInGlobal(id.getId(), func_aux);
+            
+            
+            //corpo
             if(lexer.token != Symbol.BEGIN){
                 error.signal("A funcao deve comecar com BEGIN! Linha " + lexer.getLineNumber());
             }
@@ -561,20 +586,17 @@ public class Compiler {
                 error.signal("A funcao deve terminar com END! Linha " + lexer.getLineNumber());
             }
             lexer.nextToken(); 
-
-            func_aux = new Func_aux(tipo, paramlist);
             
-            symtable.putInGlobal(id.getId(), func_aux);
-
+            
             //limpar tabela de variaveis locais
             symtable.removeLocalIdent();
             
+            
+            //montar objeto final e colocar na lista
             novo = new Func_decl(tipo, id.getId(), paramlist, corpo);
             
             funcoes.add(novo);
         }
-        
-        return funcoes;
     }
     
     //func_body -> decl stmt_list
