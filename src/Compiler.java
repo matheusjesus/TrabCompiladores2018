@@ -752,7 +752,7 @@ public class Compiler {
         }
         lexer.nextToken();
         
-        return new Read_stmt(idlist);
+        return new Read_stmt(idlist, symtable);
     }
     
     //write_stmt -> WRITE ( id_list );
@@ -878,15 +878,16 @@ public class Compiler {
                     expresq = new Expr(cont);
                     
                     //analise semantica: verificar se nao eh string
-                    sym = (Symbol) symtable.getInGlobal(cont);
+                    sym = (Symbol) symtable.getInLocal(cont.getId());
                     if(sym == null){
-                        sym = (Symbol) symtable.getInLocal(cont);
+                        sym = (Symbol) symtable.getInGlobal(cont.getId());
                         if(sym == null){
                             error.signal("Variavel "+ cont.getId() +" nao declarada!");
                         }
                     }       
-                    else if(sym == Symbol.STRING){
-                        error.signal("Variavel de tipo string nao pode ter seu valor alterado!");
+                    
+                    if(sym == Symbol.STRING){
+                        error.signal("Variavel de tipo string nao podeser usado em operacoes matematicas!");
                     }
                     
                     break;
@@ -943,15 +944,16 @@ public class Compiler {
                     expresq = new Expr(cont);
                     
                     //analise semantica: verificar se nao eh string
-                    sym = (Symbol) symtable.getInGlobal(cont);
+                    sym = (Symbol) symtable.getInLocal(cont.getId());
                     if(sym == null){
-                        sym = (Symbol) symtable.getInLocal(cont);
+                        sym = (Symbol) symtable.getInGlobal(cont.getId());
                         if(sym == null){
                             error.signal("Variavel "+ cont.getId() +" nao declarada!");
                         }
                     }       
-                    else if(sym == Symbol.STRING){
-                        error.signal("Variavel de tipo string nao pode ter seu valor alterado!");
+                    
+                    if(sym == Symbol.STRING){
+                        error.signal("Variavel de tipo string nao pode ser usado em operacoes matematicas!");
                     }
                     
                     break;
