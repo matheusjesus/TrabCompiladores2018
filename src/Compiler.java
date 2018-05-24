@@ -709,6 +709,8 @@ public class Compiler {
     //read_stmt -> READ ( id_list );
     public Read_stmt read_stmt(){
         ArrayList<Id> idlist;
+        Symbol sym = null;
+        
         if(lexer.token != Symbol.READ){
             error.signal("Esperado uma declaracao de READ na linha " + lexer.getLineNumber());
         }
@@ -720,6 +722,25 @@ public class Compiler {
         lexer.nextToken();
 
         idlist = id_list();
+        
+        
+        //verificacao hash:
+        for(Id id: idlist){
+            sym = (Symbol) symtable.getInGlobal(id.getId());
+            
+            if(sym == null){
+                sym = (Symbol) symtable.getInLocal(id.getId());
+            }
+            
+            if(sym == null){
+                error.signal("Variavel "+ id.getId() +" nao declarada!");
+            }
+            else if(sym == Symbol.STRING){
+                error.signal("Variavel de tipo string nao pode ter seu valor alterado!");
+            }
+        }
+        
+        
         
         if(lexer.token != Symbol.RPAR){
             error.signal("Os parametros devem estar entre parenteses! Linha " + lexer.getLineNumber());
@@ -1230,6 +1251,12 @@ public class Compiler {
         compop = compop();
         
         expr2 = expr();
+        
+        if(expr1.getTipo(symtable) == Symbol.STRING || expr2.getTipo(symtable) == Symbol.STRING){
+            error.signal("Comparacoes nao podem ser feitas com strings!");
+        }
+        
+        
         
         return new Cond(expr1, compop, expr2);
     }
