@@ -758,6 +758,7 @@ public class Compiler {
     //write_stmt -> WRITE ( id_list );
     public Write_stmt write_stmt(){
         ArrayList<Id> idlist;
+        Symbol sym = null;
         
         if(lexer.token != Symbol.WRITE){
             error.signal("Esperado uma declaracao de READ na linha " + lexer.getLineNumber());
@@ -770,6 +771,19 @@ public class Compiler {
         lexer.nextToken();
 
         idlist = id_list();
+        
+        //analise semantica
+        for(Id id: idlist){
+            sym = (Symbol) symtable.getInGlobal(id.getId());
+            
+            if(sym == null){
+                sym = (Symbol) symtable.getInLocal(id.getId());
+                
+                if(sym == null){
+                    error.signal("Variavel "+ id.getId() +" nao declarada!");
+                }
+            }
+        }
         
         if(lexer.token != Symbol.RPAR){
             error.signal("Os parametros devem estar entre parenteses! Linha " + lexer.getLineNumber());
@@ -835,6 +849,7 @@ public class Compiler {
         boolean factail = true;
         Expr expresq = null, exprdir = null;
         Expr_conteudo cont = null;
+        Symbol sym = null;
         
         if(fact.getTail().isEmpty()){
             factail = false;
@@ -861,6 +876,19 @@ public class Compiler {
                 case 2: //id
                     cont = new Expr_conteudo(fact.getPrimary().getId());
                     expresq = new Expr(cont);
+                    
+                    //analise semantica: verificar se nao eh string
+                    sym = (Symbol) symtable.getInGlobal(cont);
+                    if(sym == null){
+                        sym = (Symbol) symtable.getInLocal(cont);
+                        if(sym == null){
+                            error.signal("Variavel "+ cont.getId() +" nao declarada!");
+                        }
+                    }       
+                    else if(sym == Symbol.STRING){
+                        error.signal("Variavel de tipo string nao pode ter seu valor alterado!");
+                    }
+                    
                     break;
                 case 3: //int
                     cont = new Expr_conteudo(fact.getPrimary().getInt());
@@ -888,6 +916,7 @@ public class Compiler {
         Factor_tail ftail;
         Expr expresq = null, exprdir = null;
         Expr_conteudo cont = null;
+        Symbol sym = null;
         
         ftail = tail.get(0);
         
@@ -912,6 +941,19 @@ public class Compiler {
                 case 2: //id
                     cont = new Expr_conteudo(ftail.getPrimary().getId());
                     expresq = new Expr(cont);
+                    
+                    //analise semantica: verificar se nao eh string
+                    sym = (Symbol) symtable.getInGlobal(cont);
+                    if(sym == null){
+                        sym = (Symbol) symtable.getInLocal(cont);
+                        if(sym == null){
+                            error.signal("Variavel "+ cont.getId() +" nao declarada!");
+                        }
+                    }       
+                    else if(sym == Symbol.STRING){
+                        error.signal("Variavel de tipo string nao pode ter seu valor alterado!");
+                    }
+                    
                     break;
                 case 3: //int
                     cont = new Expr_conteudo(ftail.getPrimary().getInt());
@@ -1161,7 +1203,7 @@ public class Compiler {
             error.signal("Um sinal de + ou - era esperado na linha " + lexer.getLineNumber());
         }
         addop = lexer.token;
-        
+                
         lexer.nextToken();
         
         return addop;
