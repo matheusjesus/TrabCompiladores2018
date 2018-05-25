@@ -226,7 +226,7 @@ public class Compiler {
         ArrayList<Var_type> lv = new ArrayList();
         Var_type v;
         
-        if(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT){
+        while(lexer.token == Symbol.FLOAT || lexer.token == Symbol.INT){
             tipo = var_type();
 
             idlist = id_list();
@@ -248,7 +248,7 @@ public class Compiler {
                 } else {
                     if(symtable.getInLocal(i.getId()) != null)
                         error.signal("Variavel "+ i.getId() +" ja declarada!");
-
+                    
                     symtable.putInLocal(i.getId(), v.getTipo());
                 }
                
@@ -445,6 +445,8 @@ public class Compiler {
             tipo = any_type();
             id = id();
             
+            symtable.putInLocal("funcao atual", tipo);
+            
             //fazemos verificacao do nome na tabela hash.
             if(symtable.get(id.getId()) != null){
                 error.signal("Funcao ja declarada! Linha " + lexer.getLineNumber());
@@ -494,7 +496,7 @@ public class Compiler {
             lexer.nextToken();
 
             corpo = func_body();
-            /*ver se retorno do func_body é igual tipo...*/
+
             if(lexer.token != Symbol.END){
                 error.signal("Esperado uma declaracao END na linha " + lexer.getLineNumber());
             }
@@ -531,6 +533,8 @@ public class Compiler {
 
             tipo = any_type();
             id = id();
+            
+            symtable.putInLocal("funcao atual", tipo);
             
             //fazemos verificacao do nome na tabela hash.
             if(symtable.get(id.getId()) != null){
@@ -693,16 +697,9 @@ public class Compiler {
     public Assign_expr assign_expr(){       
         Expr expr = null;
         Id id = null;
+        Symbol tipo = null;
         
-        id = id();
-        if(symtable.getInLocal(id.getId()) == null && symtable.getInGlobal(id.getId()) == null)
-            error.signal("Variavel "+ id.getId() +" nao declarada!");
-        
-        Func_aux funcaux = (Func_aux) symtable.getInGlobal(id.getId());
-        if(funcaux == null){
-            error.signal("Funcao chamada nao declarada! Linha " + lexer.getLineNumber());
-        }
-        
+        id = id();  
         
         if(lexer.token != Symbol.ASSIGN){
             error.signal("Esperado uma simbolo de designacao na linha " + lexer.getLineNumber());
@@ -710,13 +707,18 @@ public class Compiler {
         lexer.nextToken();
         
         expr = expr();
-        /*Verifica se a variavel esta recebendo o mesmo tipo que foi declarada. exemplo FOR*/
-        //FOR(i:= 0 ; i < num ; i := i + 1)
-        Param_decl_list params = funcaux.getParam();
-        ArrayList<Param_decl> parlist = params.getParlist();
-        for (Param_decl p : parlist){
-            if(p.getTipo() != expr.getTipo(symtable))
-                error.signal("Identificador com declaracao diferente da designacao!. Linha "+lexer.getCurrentLine());
+
+        tipo = (Symbol) symtable.getInLocal(id.getId());
+        if(tipo == null){
+            tipo = (Symbol) symtable.getInLocal(id.getId());
+        }
+        
+        if(tipo == null){
+            error.signal("Variavel "+ id.getId() +" nao declarada!");
+        }
+        
+        if(tipo != expr.getTipo(symtable)){
+            error.signal("Os tipos das variaveis de atribuicao sao incompativeis! Tentando passar "+ expr.getTipo(symtable) +" para "+ tipo +".");
         }
         
         return new Assign_expr(id, expr);
@@ -811,12 +813,13 @@ public class Compiler {
         }
         lexer.nextToken();        
         
-        return new Write_stmt(idlist);
+        return new Write_stmt(idlist, symtable);
     }
     
     //return_stmt -> RETURN expr;
     public Return_stmt return_stmt(){
         Expr expr;
+        Symbol tipofuncao;
         
         if(lexer.token != Symbol.RETURN){
             error.signal("Esperado declaracao RETURN na linha " + lexer.getLineNumber());
@@ -824,6 +827,14 @@ public class Compiler {
         lexer.nextToken();
         
         expr = expr();
+        
+        tipofuncao = (Symbol) symtable.getInLocal("funcao atual");
+        if(tipofuncao == Symbol.VOID){
+            error.signal("Funcoes do tipo VOID nao devem possuir retorno!");
+        }
+        else if(tipofuncao != expr.getTipo(symtable)){
+            error.signal("Tipo de retorno incompativel! Esperado "+ symtable.getInLocal("funcao atual") +".");
+        }
         
         if(lexer.token != Symbol.SEMICOLON){
             error.signal("Esperado ponto e virgula na linha " + lexer.getLineNumber() + " ou anterior a ela.");
@@ -903,7 +914,7 @@ public class Compiler {
                     }       
                     
                     if(sym == Symbol.STRING){
-                        error.signal("Variavel de tipo string nao pode ser usado em operacoes matematicas!");
+                        error.signal("Variavel de tipo string nao pode ser usado em operacoes matematicas ou atribuicoes!");
                     }
                     
                     break;
@@ -969,7 +980,7 @@ public class Compiler {
                     }       
                     
                     if(sym == Symbol.STRING){
-                        error.signal("Variavel de tipo string nao pode ser usado em operacoes matematicas!");
+                        error.signal("Variavel de tipo string nao pode ser usado em operacoes matematicas ou atribuicoes!");
                     }
                     
                     break;

@@ -9,11 +9,6 @@ public class Return_stmt extends Stmt{
         this.expr = expr;
     }
     
-    //return_stmt -> RETURN expr;
-    public Expr getExpr(){
-        return expr;
-    }
-    
     @Override
     public void genC(PW pw, boolean ident) {
         pw.print("return ", true);

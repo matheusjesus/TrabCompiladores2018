@@ -16,10 +16,7 @@ BEGIN
   FUNCTION VOID main ( ) BEGIN
     STRING comeco := "Insira um numero: ";
     STRING fim := "O fatorial e ";
-    INT num;
-    INT f;
-
-    num := num * comeco;
+    INT num, f;
 
     WRITE ( comeco );
     READ ( num );
