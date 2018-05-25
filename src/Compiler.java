@@ -494,7 +494,7 @@ public class Compiler {
             lexer.nextToken();
 
             corpo = func_body();
-
+            /*ver se retorno do func_body é igual tipo...*/
             if(lexer.token != Symbol.END){
                 error.signal("Esperado uma declaracao END na linha " + lexer.getLineNumber());
             }
@@ -695,6 +695,14 @@ public class Compiler {
         Id id = null;
         
         id = id();
+        if(symtable.getInLocal(id.getId()) == null && symtable.getInGlobal(id.getId()) == null)
+            error.signal("Variavel "+ id.getId() +" nao declarada!");
+        
+        Func_aux funcaux = (Func_aux) symtable.getInGlobal(id.getId());
+        if(funcaux == null){
+            error.signal("Funcao chamada nao declarada! Linha " + lexer.getLineNumber());
+        }
+        
         
         if(lexer.token != Symbol.ASSIGN){
             error.signal("Esperado uma simbolo de designacao na linha " + lexer.getLineNumber());
@@ -702,6 +710,14 @@ public class Compiler {
         lexer.nextToken();
         
         expr = expr();
+        /*Verifica se a variavel esta recebendo o mesmo tipo que foi declarada. exemplo FOR*/
+        //FOR(i:= 0 ; i < num ; i := i + 1)
+        Param_decl_list params = funcaux.getParam();
+        ArrayList<Param_decl> parlist = params.getParlist();
+        for (Param_decl p : parlist){
+            if(p.getTipo() != expr.getTipo(symtable))
+                error.signal("Identificador com declaracao diferente da designacao!. Linha "+lexer.getCurrentLine());
+        }
         
         return new Assign_expr(id, expr);
     }
@@ -887,7 +903,7 @@ public class Compiler {
                     }       
                     
                     if(sym == Symbol.STRING){
-                        error.signal("Variavel de tipo string nao podeser usado em operacoes matematicas!");
+                        error.signal("Variavel de tipo string nao pode ser usado em operacoes matematicas!");
                     }
                     
                     break;
