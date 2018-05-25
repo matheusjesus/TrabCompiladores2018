@@ -15,7 +15,7 @@ public class Read_stmt extends Stmt{
         
         this.id_list = id_list;
         
-        for(i=0;i<id_list.size();i++){
+        for(i = 0; i < id_list.size(); i++){
             if(symtable.getInLocal(id_list.get(i).getId()) ==  Symbol.INT){
                 this.typelist[i] = 'd';
             }
@@ -29,7 +29,7 @@ public class Read_stmt extends Stmt{
     @Override
     public void genC(PW pw, boolean ident) {
         int i;
-        for(i = 0;i<id_list.size();i++){
+        for(i = 0; i < id_list.size(); i++){
             pw.println("scanf(\"%"+ typelist[i] +"\", &"+id_list.get(i).getId()+");", true);
         }
 

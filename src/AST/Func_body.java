@@ -9,6 +9,10 @@ public class Func_body {
         this.stmt_list = stmt_list;
     }
     
+    public Stmt_list getStmt(){
+        return stmt_list;
+    }
+    
     public void genC(PW pw){
         if(declaration != null)
             declaration.genC(pw);
