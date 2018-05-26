@@ -100,7 +100,7 @@ public class Lexer {
         if (input[tokenPos] == '"'){
             tokenPos++;
             
-            stringValue = "\0";
+            stringValue = "";
             while(input[tokenPos] != '"' && input[tokenPos] != '\0'){
                 stringValue += input[tokenPos];
                 tokenPos++;
