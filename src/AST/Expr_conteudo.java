@@ -49,6 +49,13 @@ public class Expr_conteudo {
                 return Symbol.INT;
             case 4:
                 return Symbol.FLOAT;
+            case 5:
+                if(this.operador == Symbol.DIV){
+                    return Symbol.FLOAT;
+                }
+                else{
+                    return Symbol.INT;
+                }
         }
         
         return null;

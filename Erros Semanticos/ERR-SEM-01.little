@@ -1,0 +1,34 @@
+PROGRAM p01
+BEGIN
+	STRING entrada := "Entre com os numeros";
+	STRING pulalinha := "\n";
+	
+	INT repeticao;
+	
+	FUNCTION FLOAT divisao (INT a, INT b) BEGIN
+		FLOAT res, res;
+		
+		res := a / b;
+		
+		RETURN res;
+	END
+
+	FUNCTION VOID main () BEGIN
+		STRING resp := "Resultado: ";
+		STRING pulalinha := "\n\n";
+		
+		FLOAT res;
+		INT a, i;
+		
+		repeticao:=10;
+		
+		FOR(i:=0;i<repeticao;i:=i+1)
+			WRITE(entrada);
+			READ(a, b);
+		
+			res := divisao(a, b);
+		
+			WRITE(resp, res, pulalinha);
+		ENDFOR
+	END
+END

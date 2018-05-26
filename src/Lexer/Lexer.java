@@ -68,7 +68,10 @@ public class Lexer {
     }
     
     
-    public Symbol nextToken() {       
+    public Symbol nextToken() {
+        lastTokenPos = tokenPos - 1;
+
+        
         //pula os caracteres de espacamento e pula linha
         while(Character.isWhitespace(input[tokenPos]) == true){
             if (input[tokenPos] == '\n'){
@@ -133,7 +136,7 @@ public class Lexer {
                 //converte string para inteiro
                 FloatNumber = Float.parseFloat(aux.toString());
                 if (FloatNumber > Float.MAX_VALUE){
-                    error.signal("O valor e maior que o valor maximo de um float.");
+                    error.show("O valor e maior que o valor maximo de um float.");
                 }
                 token = Symbol.FLOATLITERAL;
 
@@ -145,7 +148,7 @@ public class Lexer {
                 //converte string para inteiro
                 IntNumber = Integer.parseInt(aux.toString());
                 if (IntNumber > MaxValueInteger){
-                    error.signal("O valor e maior que o valor maximo de um int.");
+                    error.show("O valor e maior que o valor maximo de um int.");
                 }
                 this.token = Symbol.INTLITERAL;
                 if(DEBUGLEXER)
@@ -164,7 +167,7 @@ public class Lexer {
                 }
                 
                 if(tamstr > 31){
-                    error.signal("O tamanho maximo de um identificador eh de 31 caracteres! Valor ultrapassado, linha: " + lineNumber);
+                    error.show("O tamanho maximo de um identificador eh de 31 caracteres! Valor ultrapassado" );
                 }
             }
             
@@ -220,7 +223,7 @@ public class Lexer {
                         token = Symbol.RPAR;
                         break;
                     default:
-                        error.signal("erro lexico");
+                        error.show("erro lexico");
                 }
                 tokenPos++;
             }
@@ -228,7 +231,6 @@ public class Lexer {
         if (DEBUGLEXER)
             System.out.println(token.toString() + "\n\n");
 
-        lastTokenPos = tokenPos - 1;
         return token;
     }
     

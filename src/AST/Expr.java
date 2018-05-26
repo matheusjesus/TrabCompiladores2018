@@ -46,7 +46,7 @@ public class Expr {
             }
             
             if(this.tipo == null){
-                System.out.println("Errinho esquisito!");
+//                System.out.println("Errinho esquisito!");
             }
         }else if(call != null){
             funcaux = (Func_aux) symtable.getInGlobal(call.getId().getId());

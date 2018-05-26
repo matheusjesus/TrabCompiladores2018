@@ -52,8 +52,10 @@ public class Main {
             Compiler compiler = new Compiler();
         
             Program p = compiler.compile(input);
-            p.genC(pw);
+            if(p != null){
+                p.genC(pw);
             }
+        }
     }
 }
         
