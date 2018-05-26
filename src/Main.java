@@ -44,17 +44,23 @@ public class Main {
                 System.out.println("Error in handling the file " + args[0]);
                 throw new RuntimeException();
             }
-                
-            PrintWriter printwriter = new PrintWriter(System.out, true);
-            PW pw = new PW();
-            pw.set(printwriter);
+            try{
+                PrintWriter printwriter = new PrintWriter("arquivo_gerado.c");
+                PW pw = new PW();
+                pw.set(printwriter);
             
-            Compiler compiler = new Compiler();
-        
-            Program p = compiler.compile(input);
-            if(p != null){
-                p.genC(pw);
+                Compiler compiler = new Compiler();
+
+                Program p = compiler.compile(input);
+                if(p != null){
+                    p.genC(pw);
+                }
+                printwriter.flush();
+                printwriter.close();
+            }catch(Exception e){
+            System.out.println("ops");
             }
+            
         }
     }
 }

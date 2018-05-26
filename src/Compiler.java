@@ -123,7 +123,7 @@ public class Compiler {
         ArrayList<VariableStr> strlist = new ArrayList();
         VariableStr novo;
         Id idnovo = null;
-        String strnovo = null;
+        String strnovo = "";
         
         if(lexer.token == Symbol.STRING){
             lexer.nextToken();
@@ -172,7 +172,7 @@ public class Compiler {
     
     //str -> STRINGLITERAL
     public String str(){
-        String str = null;
+        String str = "";
         
         if(lexer.token != Symbol.STRINGLITERAL){
             error.show("Esperado um STRINGLITERAL!");
