@@ -1,6 +1,7 @@
 import AST.PW;
 import AST.Program;
 import java.io.*;
+import java.util.Arrays;
 
 public class Main {
     public static void main( String []args ) {
@@ -45,20 +46,35 @@ public class Main {
                 throw new RuntimeException();
             }
             try{
-                PrintWriter printwriter = new PrintWriter("arquivo_gerado.c");
-                PW pw = new PW();
-                pw.set(printwriter);
-            
-                Compiler compiler = new Compiler();
+                int index;
+                String nomearquivo, nomegerado;                
 
-                Program p = compiler.compile(input);
+                Compiler compiler = new Compiler();
+                PW pw = new PW();
+                Program p;
+                
+                
+                //RODA O COMPILER:                
+                p = compiler.compile(input);
                 if(p != null){
+                    //se nao teve erro: prepara nome do arquivo saida:
+
+                    nomearquivo = args[0];
+                    index = nomearquivo.indexOf(".little");
+                    nomegerado = nomearquivo.substring(0, index);
+                    nomegerado = nomegerado.concat(".c");
+
+                    PrintWriter printwriter = new PrintWriter(nomegerado);
+                    pw.set(printwriter);
+                    
+                    //chama genC:
                     p.genC(pw);
+
+                    printwriter.flush();
+                    printwriter.close();
                 }
-                printwriter.flush();
-                printwriter.close();
             }catch(Exception e){
-            System.out.println("ops");
+                System.out.println("Um erro inesperado ocorreu!");
             }
             
         }
