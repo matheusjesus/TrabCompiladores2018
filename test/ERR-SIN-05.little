@@ -1,7 +1,0 @@
-PROGRAM prog5
-BEGIN
-    FUNCTION VOID main() BEGIN
-        --write deve conter um identificador como parametro
-        WRITE("alou mundo");        
-    END
-END
