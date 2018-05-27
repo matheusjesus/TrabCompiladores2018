@@ -1,0 +1,21 @@
+PROGRAM p09
+BEGIN
+  --Na funcao imprimirXvezes nao existe 3 parametros dentro do FOR
+  FUNCTION VOID imprimirXvezes ( INT num ) BEGIN
+    INT i;
+    FOR(i< num)
+        WRITE(num);
+    ENDFOR
+  END
+
+  FUNCTION VOID main ( ) BEGIN
+    STRING inicio := "Insira um numero: ";
+    INT num;
+
+    WRITE ( comeco );
+    READ ( num );
+
+    imprimirXvezes( num );
+  END
+
+END
