@@ -7,7 +7,7 @@ BEGIN
     BEGIN
         STRING a := "aaaa";
 
-        INT bubu lala;
+        INT bubu, lala;
         FLOAT fit;
     END
 END
