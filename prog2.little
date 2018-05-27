@@ -1,8 +1,8 @@
-
 PROGRAM p02
 BEGIN
   FUNCTION VOID main ( ) BEGIN
-    STRING comeco := "Insira seu peso e altura: ";
+    STRING pesostr := "Insira seu peso: ";
+    STRING alturastr := "Insira sua altura: ";
     STRING imcalto := "Seu IMC esta acima do ideal";
     STRING imcbaixo := "Seu IMC esta abaixo do ideal";
     STRING imcideal := "Seu IMC esta no padroes normais";
@@ -11,8 +11,8 @@ BEGIN
 
     flag := 0;
 
-    WRITE ( comeco );
-    READ ( peso, altura );
+    WRITE (pesostr);	READ (peso);
+    WRITE (alturastr);	READ (altura);
 
     alturaquad := altura * altura;
     imc := peso / alturaquad;

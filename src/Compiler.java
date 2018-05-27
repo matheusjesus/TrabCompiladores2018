@@ -1,8 +1,8 @@
 import Lexer.*;
 import Error.*;
 import AST.*;
-import java.util.*;
 import AuxComp.*;
+import java.util.ArrayList;
 
 public class Compiler {
     private Lexer lexer;
@@ -395,7 +395,6 @@ public class Compiler {
     
     //param_decl_list -> param_decl param_decl_tail
     public Param_decl_list param_decl_list(){
-        Param_decl_list paramlist;
         ArrayList<Param_decl> parlist;
         
         parlist = param_decl();
@@ -494,7 +493,7 @@ public class Compiler {
             id = id();
                         
             //fazemos verificacao do nome na tabela hash.
-            if(symtable.get(id.getId()) != null){
+            if(symtable.getInGlobal(id.getId()) != null){
                 error.show("Funcao ja declarada!");
                 
             }else{
@@ -515,9 +514,9 @@ public class Compiler {
                         while(lexer.token != Symbol.RPAR){
                             lexer.nextToken();
                         }
-                        lexer.nextToken();
                     }
-                    
+                    lexer.nextToken();
+
                     main = true;
                 }
                 //nao é main
@@ -596,7 +595,7 @@ public class Compiler {
             
             
             //fazemos verificacao do nome na tabela hash.
-            if(symtable.get(id.getId()) != null){
+            if(symtable.getInGlobal(id.getId()) != null){
                 error.show("Funcao ja declarada!");
             }
             else{
@@ -612,17 +611,16 @@ public class Compiler {
                         lexer.nextToken();
                     }
 
-                    if(lexer.token == Symbol.IDENT){
-                        error.show("Funcao 'main' nao suporta parametros!");
-                        lexer.nextToken();
-                    }
-                    
                     if(lexer.token != Symbol.RPAR){
-                        error.show("Espera-se ')'!");
+                        error.show("Funcao 'main' nao suporta parametros!");
+                     
+                        while(lexer.token != Symbol.RPAR){
+                            lexer.nextToken();
+                        }
                     }
-                    else{
-                        lexer.nextToken();
-                    }
+                    lexer.nextToken();
+
+                    main = true;
                 }
                 //nao é main
                 else {    

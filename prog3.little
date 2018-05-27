@@ -7,7 +7,7 @@ BEGIN
     IF ( num < 2 ) THEN
         RETURN 1;
     ELSE
-        fat := fat * fatorial(num - 1);
+        fat := num * fatorial(num - 1);
         RETURN fat;
     ENDIF
   END
@@ -24,7 +24,7 @@ BEGIN
     f := fatorial( num );
 
     WRITE ( fim );
-    WRITE ( num );
+    WRITE ( f );
   END
 
 END

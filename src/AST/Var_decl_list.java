@@ -3,8 +3,8 @@ import Lexer.Symbol;
 import java.util.*;
         
 public class Var_decl_list {
-    ArrayList<VariableInt> intlist = null;
-    ArrayList<VariableFloat> floatlist = null;
+    private ArrayList<VariableInt> intlist = null;
+    private ArrayList<VariableFloat> floatlist = null;
     
     public Var_decl_list(ArrayList<Var_type> lv){
         int i;

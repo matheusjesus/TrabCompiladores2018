@@ -33,7 +33,7 @@ public class Write_stmt extends Stmt{
     public void genC(PW pw, boolean ident) {
         int i;
         for(i=0;i<id_list.size();i++){
-            pw.println("print(\"%"+ typelist[i] +"\", "+id_list.get(i).getId()+");", true);
+            pw.println("printf(\"%"+ typelist[i] +"\", "+id_list.get(i).getId()+");", true);
         }
     }
 }

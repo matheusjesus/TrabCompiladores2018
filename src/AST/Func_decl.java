@@ -4,11 +4,11 @@ import Lexer.Symbol;
 import java.util.ArrayList;
 
 public class Func_decl {
-    Symbol tipo;
-    String nome;
-    Param_decl_list paramlist;
-    Func_body corpo;
-    ArrayList<Var_type> varlist;
+    private Symbol tipo;
+    private String nome;
+    private Param_decl_list paramlist;
+    private Func_body corpo;
+    private ArrayList<Var_type> varlist;
     
     public Func_decl(Symbol tipo, String nome, Param_decl_list paramlist, Func_body corpo){
         this.tipo = tipo;

@@ -34,7 +34,7 @@ public class Expr {
         }
         
         tipoconteudo = conteudo.getTipo();
-        call = conteudo.call;
+        call = conteudo.call();
         
         if(tipoesq == Symbol.FLOAT || tipodir == Symbol.FLOAT || tipoconteudo == Symbol.FLOAT){
             this.tipo = Symbol.FLOAT;        
@@ -45,15 +45,8 @@ public class Expr {
                 this.tipo = (Symbol) symtable.getInGlobal(conteudo.getId());
             }
             
-            if(this.tipo == null){
-//                System.out.println("Errinho esquisito!");
-            }
         }else if(call != null){
             funcaux = (Func_aux) symtable.getInGlobal(call.getId().getId());
-            
-            if(funcaux == null){
-                System.out.println("funcao nao encontrada!");
-            }
             
             this.tipo = funcaux.getTipo();
         }

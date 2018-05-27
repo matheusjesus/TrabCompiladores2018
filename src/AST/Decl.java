@@ -1,8 +1,8 @@
 package AST;
 
 public class Decl {
-    String_decl_list stringlist;
-    Var_decl_list varlist;
+    private String_decl_list stringlist;
+    private Var_decl_list varlist;
     
     public Decl(String_decl_list stringlist, Var_decl_list varlist){
        this.stringlist = stringlist;

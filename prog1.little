@@ -1,6 +1,6 @@
 PROGRAM p01
 BEGIN
-  FUNCTION VOID main ( ) BEGIN
+  FUNCTION VOID main() BEGIN
     INT a, b, res;
 
     READ ( a, b );

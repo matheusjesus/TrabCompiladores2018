@@ -18,7 +18,7 @@ public class VariableStr extends Var_type{
     declara a string como ponteiro, aloca o tamanho com malloc e copia o valor com strcpy*/
     public void genC(PW pw) {
       
-      pw.println("" + this.getNome() + " = (char *) malloc(sizeof(char) * "+this.str.length()+"));", true);
+      pw.println("" + this.getNome() + " = (char *) malloc(sizeof(char) * "+this.str.length()+");", true);
       pw.println("strcpy(" + this.getNome() + ",  \" " + this.str + "\");", true);
       pw.print("\n", false);
     }

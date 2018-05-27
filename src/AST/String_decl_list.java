@@ -3,7 +3,7 @@ package AST;
 import java.util.ArrayList;
 
 public class String_decl_list {
-    ArrayList<VariableStr> strlist;
+    private ArrayList<VariableStr> strlist;
     
     public String_decl_list(ArrayList<VariableStr> strlist){
         this.strlist = strlist;

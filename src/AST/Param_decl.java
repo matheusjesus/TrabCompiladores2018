@@ -3,8 +3,8 @@ package AST;
 import Lexer.Symbol;
 
 public class Param_decl {
-    Symbol tipo;
-    String nome;
+    private Symbol tipo;
+    private String nome;
     
     public Param_decl(Symbol tipo, String nome){
         this.tipo = tipo;

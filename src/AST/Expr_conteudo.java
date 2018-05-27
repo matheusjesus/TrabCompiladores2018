@@ -3,13 +3,13 @@ package AST;
 import Lexer.Symbol;
 
 public class Expr_conteudo {
-    int tipo;
-    Id id = null;
-    Var_type var = null;
-    int numint;
-    float numfloat;
-    Symbol operador = null;
-    Call_expr call = null;
+    private int tipo;
+    private Id id = null;
+    private Var_type var = null;
+    private int numint;
+    private float numfloat;
+    private Symbol operador = null;
+    private Call_expr call = null;
     
     public Expr_conteudo(Id id){
         this.id = id;
@@ -62,7 +62,7 @@ public class Expr_conteudo {
     }
     
     public Call_expr call(){
-        return call;
+        return this.call;
     }
     
     public String getId(){
